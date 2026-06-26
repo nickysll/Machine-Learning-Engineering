@@ -1,0 +1,51 @@
+[project]
+name = "tech-challenge-fase-02"
+version = "0.1.0"
+description = "Sistema de recomendação de filmes utilizando Machine Learning."
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+
+dependencies = [
+    "numpy",
+    "pandas",
+    "scikit-learn",
+    "torch",
+    "torchvision",
+    "torchaudio",
+    "mlflow",
+    "dvc",
+    "matplotlib",
+    "seaborn",
+    "jupyter",
+    "notebook",
+    "requests",
+    "pyyaml",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "ruff",
+    "black",
+    "pre-commit",
+    "ipykernel",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "I",
+]
+
+[tool.pytest.ini_options]
+pythonpath = [
+    "src"
+]
+testpaths = [
+    "tests"
+]
