@@ -20,6 +20,9 @@ dependencies = [
     "notebook",
     "requests",
     "pyyaml",
+    "protobuf>=4.25.0,<6",
+    "pydantic",
+    "pydantic-settings"
 ]
 
 [dependency-groups]
@@ -49,3 +52,7 @@ pythonpath = [
 testpaths = [
     "tests"
 ]
+[tool.poetry]
+name = "tech-challenge-fase-02"
+version = "0.1.0"
+package-mode = false

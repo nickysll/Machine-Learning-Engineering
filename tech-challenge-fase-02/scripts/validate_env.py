@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib
 import os
+from pathlib import Path
 from typing import Iterable
 
 
@@ -17,13 +18,20 @@ def _check_imports(packages: Iterable[str]) -> None:
         raise RuntimeError(f"Missing/unimportable packages: {missing}")
 
 
-def main() -> None:
-    # 1) checa versão do Python
-    if not (3, 12) <= tuple(map(int, os.sys.version_info[:2])) <= (3, 12):
-        # alvo típico do projeto (você usa >=3.12,<3.13)
-        pass
+def _check_env_file() -> None:
+    env_example = Path(".env.example")
+    if not env_example.exists():
+        raise RuntimeError("Missing .env.example in project root")
 
-    # 2) checa imports essenciais
+    required_vars = ["MLFLOW_TRACKING_URI", "DVC_REMOTE"]
+    content = env_example.read_text(encoding="utf-8")
+
+    missing_vars = [v for v in required_vars if v + "=" not in content]
+    if missing_vars:
+        raise RuntimeError(f".env.example missing variables: {missing_vars}")
+
+
+def main() -> None:
     _check_imports(
         [
             "numpy",
@@ -36,6 +44,7 @@ def main() -> None:
             "yaml",
         ]
     )
+    _check_env_file()
 
     print("Environment validation: OK")
 
