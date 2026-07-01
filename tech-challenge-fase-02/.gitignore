@@ -1,18 +1,3 @@
-tech-challenge-fase-02/data/raw/*
-!tech-challenge-fase-02/data/raw/.gitkeep
-
-tech-challenge-fase-02/data/processed/*
-!tech-challenge-fase-02/data/processed/.gitkeep
-
-tech-challenge-fase-02/data/external/*
-!tech-challenge-fase-02/data/external/.gitkeep
-
-tech-challenge-fase-02/models/*
-!tech-challenge-fase-02/models/.gitkeep
-
-tech-challenge-fase-02/reports/figures/*
-!tech-challenge-fase-02/reports/figures/.gitkeep
-
 # Ambiente virtual
 .venv/
 venv/
