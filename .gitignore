@@ -23,5 +23,29 @@ Thumbs.db
 # Dados temporários
 *.tmp
 
+# Variáveis de ambiente
+.env
 
+# Ruff
+.ruff_cache/
 
+# MLflow
+mlruns/
+
+# Dados
+data/raw/*
+!data/raw/.gitkeep
+
+data/processed/*
+!data/processed/.gitkeep
+
+data/external/*
+!data/external/.gitkeep
+
+# Modelos treinados
+models/*
+!models/.gitkeep
+
+# Figuras geradas
+reports/figures/*
+!reports/figures/.gitkeep
