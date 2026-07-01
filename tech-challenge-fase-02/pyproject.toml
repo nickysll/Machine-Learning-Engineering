@@ -22,7 +22,8 @@ dependencies = [
     "pyyaml",
     "protobuf>=4.25.0,<6",
     "pydantic",
-    "pydantic-settings"
+    "pydantic-settings",
+    "kagglehub (>=1.0.2,<2.0.0)"
 ]
 
 [dependency-groups]

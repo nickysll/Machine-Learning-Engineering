@@ -3177,6 +3177,47 @@ files = [
 ]
 
 [[package]]
+name = "kagglehub"
+version = "1.0.2"
+description = "Access Kaggle resources anywhere"
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+files = [
+    {file = "kagglehub-1.0.2-py3-none-any.whl", hash = "sha256:ffad2d79cfda9b06848e98cb0a4a48e286285cfba4aeadadc0b8dbd9bcadd372"},
+    {file = "kagglehub-1.0.2.tar.gz", hash = "sha256:08abae0c1e249904003ce6f23c189166e3032220478426a552c77c2edb08b93a"},
+]
+
+[package.dependencies]
+kagglesdk = ">=0.1.22,<1.0"
+packaging = "*"
+pyyaml = "*"
+requests = "*"
+tqdm = "*"
+
+[package.extras]
+hf-datasets = ["datasets", "pandas"]
+pandas-datasets = ["pandas"]
+polars-datasets = ["polars"]
+signing = ["betterproto (>=2.0.0b6)", "model-signing", "sigstore (>=3.6.1)"]
+
+[[package]]
+name = "kagglesdk"
+version = "0.1.33"
+description = "Bindings to access kaggle's external-facing APIs"
+optional = false
+python-versions = ">=3.11"
+groups = ["main"]
+files = [
+    {file = "kagglesdk-0.1.33-py3-none-any.whl", hash = "sha256:4906c6cd829c592265f8eacc5599bcd594641589ba4ea93ef17b98498d6c90b6"},
+    {file = "kagglesdk-0.1.33.tar.gz", hash = "sha256:d622a6df272ed9ad0b87e448fa5459bf55c1c3f801d473ac3a0787c79a7f160d"},
+]
+
+[package.dependencies]
+protobuf = "*"
+requests = "*"
+
+[[package]]
 name = "kiwisolver"
 version = "1.5.0"
 description = "A fast implementation of the Cassowary constraint solver"
@@ -5066,22 +5107,23 @@ files = [
 
 [[package]]
 name = "protobuf"
-version = "6.33.6"
+version = "5.29.6"
 description = ""
 optional = false
-python-versions = ">=3.9"
+python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "protobuf-6.33.6-cp310-abi3-win32.whl", hash = "sha256:7d29d9b65f8afef196f8334e80d6bc1d5d4adedb449971fefd3723824e6e77d3"},
-    {file = "protobuf-6.33.6-cp310-abi3-win_amd64.whl", hash = "sha256:0cd27b587afca21b7cfa59a74dcbd48a50f0a6400cfb59391340ad729d91d326"},
-    {file = "protobuf-6.33.6-cp39-abi3-macosx_10_9_universal2.whl", hash = "sha256:9720e6961b251bde64edfdab7d500725a2af5280f3f4c87e57c0208376aa8c3a"},
-    {file = "protobuf-6.33.6-cp39-abi3-manylinux2014_aarch64.whl", hash = "sha256:e2afbae9b8e1825e3529f88d514754e094278bb95eadc0e199751cdd9a2e82a2"},
-    {file = "protobuf-6.33.6-cp39-abi3-manylinux2014_s390x.whl", hash = "sha256:c96c37eec15086b79762ed265d59ab204dabc53056e3443e702d2681f4b39ce3"},
-    {file = "protobuf-6.33.6-cp39-abi3-manylinux2014_x86_64.whl", hash = "sha256:e9db7e292e0ab79dd108d7f1a94fe31601ce1ee3f7b79e0692043423020b0593"},
-    {file = "protobuf-6.33.6-cp39-cp39-win32.whl", hash = "sha256:bd56799fb262994b2c2faa1799693c95cc2e22c62f56fb43af311cae45d26f0e"},
-    {file = "protobuf-6.33.6-cp39-cp39-win_amd64.whl", hash = "sha256:f443a394af5ed23672bc6c486be138628fbe5c651ccbc536873d7da23d1868cf"},
-    {file = "protobuf-6.33.6-py3-none-any.whl", hash = "sha256:77179e006c476e69bf8e8ce866640091ec42e1beb80b213c3900006ecfba6901"},
-    {file = "protobuf-6.33.6.tar.gz", hash = "sha256:a6768d25248312c297558af96a9f9c929e8c4cee0659cb07e780731095f38135"},
+    {file = "protobuf-5.29.6-cp310-abi3-win32.whl", hash = "sha256:62e8a3114992c7c647bce37dcc93647575fc52d50e48de30c6fcb28a6a291eb1"},
+    {file = "protobuf-5.29.6-cp310-abi3-win_amd64.whl", hash = "sha256:7e6ad413275be172f67fdee0f43484b6de5a904cc1c3ea9804cb6fe2ff366eda"},
+    {file = "protobuf-5.29.6-cp38-abi3-macosx_10_9_universal2.whl", hash = "sha256:b5a169e664b4057183a34bdc424540e86eea47560f3c123a0d64de4e137f9269"},
+    {file = "protobuf-5.29.6-cp38-abi3-manylinux2014_aarch64.whl", hash = "sha256:a8866b2cff111f0f863c1b3b9e7572dc7eaea23a7fae27f6fc613304046483e6"},
+    {file = "protobuf-5.29.6-cp38-abi3-manylinux2014_x86_64.whl", hash = "sha256:e3387f44798ac1106af0233c04fb8abf543772ff241169946f698b3a9a3d3ab9"},
+    {file = "protobuf-5.29.6-cp38-cp38-win32.whl", hash = "sha256:36ade6ff88212e91aef4e687a971a11d7d24d6948a66751abc1b3238648f5d05"},
+    {file = "protobuf-5.29.6-cp38-cp38-win_amd64.whl", hash = "sha256:831e2da16b6cc9d8f1654c041dd594eda43391affd3c03a91bea7f7f6da106d6"},
+    {file = "protobuf-5.29.6-cp39-cp39-win32.whl", hash = "sha256:cb4c86de9cd8a7f3a256b9744220d87b847371c6b2f10bde87768918ef33ba49"},
+    {file = "protobuf-5.29.6-cp39-cp39-win_amd64.whl", hash = "sha256:76e07e6567f8baf827137e8d5b8204b6c7b6488bbbff1bf0a72b383f77999c18"},
+    {file = "protobuf-5.29.6-py3-none-any.whl", hash = "sha256:6b9edb641441b2da9fa8f428760fc136a49cf97a52076010cf22a2ff73438a86"},
+    {file = "protobuf-5.29.6.tar.gz", hash = "sha256:da9ee6a5424b6b30fd5e45c5ea663aef540ca95f9ad99d1e887e819cdf9b8723"},
 ]
 
 [[package]]
@@ -7482,4 +7524,4 @@ type = ["pytest-mypy (>=1.0.1) ; platform_python_implementation != \"PyPy\""]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.13"
-content-hash = "8afb2a7d2fa9f3eb5bed15c063d3fc7ab611b425791a65921be859e1af4d2ac1"
+content-hash = "5d234be77fea0c3b2167625daaf8d085e46eb6c7a319eb08e4ccbac3dd735f60"
