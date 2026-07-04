@@ -1,8 +1,7 @@
-from pathlib import Path
 import shutil
+from pathlib import Path
 
 import kagglehub
-
 
 DATASET_NAME = "abhikjha/movielens-100k"
 RAW_DATA_DIR = Path("data/raw/movielens_100k")

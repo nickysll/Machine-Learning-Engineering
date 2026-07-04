@@ -2,7 +2,6 @@ from pathlib import Path
 
 import pandas as pd
 
-
 RAW_DATA_DIR = Path("data/raw/movielens_100k")
 PROCESSED_DATA_DIR = Path("data/processed")
 

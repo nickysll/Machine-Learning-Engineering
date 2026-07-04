@@ -3,7 +3,6 @@ from pathlib import Path
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-
 PROCESSED_FILE = Path("data/processed/interactions.csv")
 FEATURES_DIR = Path("data/features")
 
@@ -21,7 +20,12 @@ def load_interactions() -> pd.DataFrame:
 def create_mapping(data: pd.DataFrame, column: str) -> pd.DataFrame:
     """Create numeric mapping for an identifier column."""
     unique_values = data[column].drop_duplicates().sort_values()
-    return pd.DataFrame({column: unique_values, f"{column}_idx": range(len(unique_values))})
+    return pd.DataFrame(
+        {
+            column: unique_values,
+            f"{column}_idx": range(len(unique_values)),
+        }
+    )
 
 
 def apply_mappings(
