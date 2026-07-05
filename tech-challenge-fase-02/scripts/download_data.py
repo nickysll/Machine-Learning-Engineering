@@ -8,7 +8,7 @@ RAW_DATA_DIR = Path("data/raw/movielens_100k")
 
 
 def clear_raw_data_dir() -> None:
-    """Remove arquivos anteriores do diretório raw."""
+    """Remove previous dataset files from raw data directory."""
     if RAW_DATA_DIR.exists():
         shutil.rmtree(RAW_DATA_DIR)
 
@@ -16,11 +16,11 @@ def clear_raw_data_dir() -> None:
 
 
 def copy_dataset_files(source_path: Path) -> None:
-    """Copia todos os arquivos do dataset de forma recursiva."""
+    """Copy all dataset files recursively to the raw data directory."""
     files = [path for path in source_path.rglob("*") if path.is_file()]
 
     if not files:
-        raise FileNotFoundError(f"Nenhum arquivo encontrado em: {source_path}")
+        raise FileNotFoundError(f"No files found in {source_path}")
 
     for file_path in files:
         destination = RAW_DATA_DIR / file_path.name
@@ -29,7 +29,7 @@ def copy_dataset_files(source_path: Path) -> None:
 
 
 def download_dataset() -> None:
-    """Baixa o MovieLens 100K pelo KaggleHub e copia para data/raw."""
+    """Download MovieLens 100K dataset from Kaggle."""
     print("Starting dataset download...")
 
     downloaded_path = Path(kagglehub.dataset_download(DATASET_NAME))
