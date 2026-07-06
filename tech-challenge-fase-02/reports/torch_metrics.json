@@ -7,5 +7,16 @@
         "f1_score": 0.6931783729156139,
         "roc_auc": 0.7649732305631485,
         "loss": 0.5822010606527328
+    },
+    "parameters": {
+        "run_name": "recommender_net",
+        "seed": 42,
+        "batch_size": 512,
+        "epochs": 20,
+        "learning_rate": 0.001,
+        "patience": 3,
+        "embedding_dim": 32,
+        "hidden_dim": 64,
+        "dropout_rate": 0.2
     }
 }

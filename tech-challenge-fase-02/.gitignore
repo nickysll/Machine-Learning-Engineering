@@ -31,6 +31,9 @@ Thumbs.db
 
 # MLflow
 mlruns/
+mlflow.db
+mlflow.db-journal
+models/*.pt
 
 # Dados
 data/raw/*
