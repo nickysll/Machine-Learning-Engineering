@@ -9,7 +9,7 @@
         "loss": 0.5822010606527328
     },
     "parameters": {
-        "run_name": "recommender_net",
+        "run_name": "dvc_recommender_net",
         "seed": 42,
         "batch_size": 512,
         "epochs": 20,
@@ -17,6 +17,7 @@
         "patience": 3,
         "embedding_dim": 32,
         "hidden_dim": 64,
-        "dropout_rate": 0.2
+        "dropout_rate": 0.2,
+        "device": "cpu"
     }
 }

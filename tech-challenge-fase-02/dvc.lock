@@ -1,0 +1,97 @@
+schema: '2.0'
+stages:
+  download_data:
+    cmd: poetry run python scripts/download_data.py
+    deps:
+    - path: scripts/download_data.py
+      hash: md5
+      md5: 11f0fe6ee11af3799e3228910b2cb49c
+      size: 1240
+    outs:
+    - path: data/raw/movielens_100k
+      hash: md5
+      md5: 7a07225112ccf8cdc73da1f2d56610d0.dir
+      size: 3303135
+      nfiles: 5
+  preprocess:
+    cmd: poetry run python -m src.data.preprocess
+    deps:
+    - path: data/raw/movielens_100k
+      hash: md5
+      md5: 7a07225112ccf8cdc73da1f2d56610d0.dir
+      size: 3303135
+      nfiles: 5
+    - path: src/data/preprocess.py
+      hash: md5
+      md5: 9091635ccddf1a63ff1f29eedd462469
+      size: 1932
+    outs:
+    - path: data/processed/interactions.csv
+      hash: md5
+      md5: 75b325f660b1c6355682c642a6dd635a
+      size: 7297265
+  feature_eng:
+    cmd: poetry run python -m src.data.feature_engineering
+    deps:
+    - path: data/processed/interactions.csv
+      hash: md5
+      md5: 75b325f660b1c6355682c642a6dd635a
+      size: 7297265
+    - path: src/data/feature_engineering.py
+      hash: md5
+      md5: b563b22ca5c661bd15590f0ea5ece285
+      size: 2766
+    outs:
+    - path: data/features/item_mapping.csv
+      hash: md5
+      md5: affefcaf69db6aa8f257cc835dde3b52
+      size: 101282
+    - path: data/features/test.csv
+      hash: md5
+      md5: d0f4a2cb3a2a72fcea6248d62e819de1
+      size: 292305
+    - path: data/features/train.csv
+      hash: md5
+      md5: b14bfb45b606e15d18c108d6076dde48
+      size: 1169396
+    - path: data/features/user_mapping.csv
+      hash: md5
+      md5: a0255064c003728071a77902f143c06c
+      size: 4682
+  train:
+    cmd: poetry run python -m src.models.train_torch --run-name
+      dvc_recommender_net --device cpu
+    deps:
+    - path: data/features/test.csv
+      hash: md5
+      md5: d0f4a2cb3a2a72fcea6248d62e819de1
+      size: 292305
+    - path: data/features/train.csv
+      hash: md5
+      md5: b14bfb45b606e15d18c108d6076dde48
+      size: 1169396
+    - path: src/evaluation/metrics.py
+      hash: md5
+      md5: 5c5e87b8e7c732c6c2640c27ed15c2de
+      size: 1186
+    - path: src/models/factory.py
+      hash: md5
+      md5: 21373c008c87cc4eb725327e63db33e2
+      size: 1189
+    - path: src/models/recommender.py
+      hash: md5
+      md5: 19338bccd09b3024ee08df2e04d34f66
+      size: 1825
+    - path: src/models/train_torch.py
+      hash: md5
+      md5: 1631958556069e21ee4755c8d083c2f9
+      size: 12115
+    outs:
+    - path: models/recommender_net.pt
+      hash: md5
+      md5: 0ba35592c227dab38f8b4db7971e33db
+      size: 1351741
+    - path: reports/torch_metrics.json
+      hash: md5
+      md5: 7b71eba45932564eff10010c5448137f
+      size: 593

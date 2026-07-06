@@ -35,18 +35,21 @@ mlflow.db
 mlflow.db-journal
 models/*.pt
 
-# Dados
+# Data files
 data/raw/*
+!data/raw/
 !data/raw/.gitkeep
+!data/raw/*.dvc
 
 data/processed/*
+!data/processed/
 !data/processed/.gitkeep
-
-data/external/*
-!data/external/.gitkeep
+!data/processed/*.dvc
 
 data/features/*
+!data/features/
 !data/features/.gitkeep
+!data/features/*.dvc
 
 # Modelos treinados
 models/*

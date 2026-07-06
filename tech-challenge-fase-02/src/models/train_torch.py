@@ -70,6 +70,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--embedding-dim", type=int, default=32)
     parser.add_argument("--hidden-dim", type=int, default=64)
     parser.add_argument("--dropout-rate", type=float, default=0.2)
+    parser.add_argument(
+        "--device",
+        type=str,
+        choices=["cpu", "cuda", "auto"],
+        default="cpu",
+    )
 
     return parser.parse_args()
 
@@ -81,9 +87,32 @@ def set_seed(seed: int) -> None:
     torch.manual_seed(seed)
 
 
-def get_device() -> torch.device:
-    """Get available training device."""
-    return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+def get_device(device_name: str) -> torch.device:
+    """Get training device.
+
+    Args:
+        device_name: Device option selected for training.
+
+    Returns:
+        PyTorch device used for training.
+
+    Raises:
+        RuntimeError: If CUDA is requested but not available.
+    """
+    if device_name == "cpu":
+        return torch.device("cpu")
+
+    if device_name == "cuda":
+        if not torch.cuda.is_available():
+            raise RuntimeError("CUDA was requested, but it is not available.")
+        return torch.device("cuda")
+
+    if torch.cuda.is_available():
+        major, minor = torch.cuda.get_device_capability(0)
+        if (major, minor) >= (7, 5):
+            return torch.device("cuda")
+
+    return torch.device("cpu")
 
 
 def load_dataset(file_path: Path) -> pd.DataFrame:
@@ -343,7 +372,7 @@ def run_training() -> None:
     test_loader = create_dataloader(test_data, args.batch_size, shuffle=False)
 
     num_users, num_items = get_model_sizes([train_data, validation_data, test_data])
-    device = get_device()
+    device = get_device(args.device)
 
     with mlflow.start_run(run_name=args.run_name):
         log_training_params(args, num_users, num_items, device)

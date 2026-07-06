@@ -1,0 +1,41 @@
+stages:
+  download_data:
+    cmd: poetry run python scripts/download_data.py
+    deps:
+      - scripts/download_data.py
+    outs:
+      - data/raw/movielens_100k
+
+  preprocess:
+    cmd: poetry run python -m src.data.preprocess
+    deps:
+      - src/data/preprocess.py
+      - data/raw/movielens_100k
+    outs:
+      - data/processed/interactions.csv
+
+  feature_eng:
+    cmd: poetry run python -m src.data.feature_engineering
+    deps:
+      - src/data/feature_engineering.py
+      - data/processed/interactions.csv
+    outs:
+      - data/features/train.csv
+      - data/features/test.csv
+      - data/features/user_mapping.csv
+      - data/features/item_mapping.csv
+
+  train:
+    cmd: poetry run python -m src.models.train_torch --run-name dvc_recommender_net --device cpu
+    deps:
+      - src/models/train_torch.py
+      - src/models/recommender.py
+      - src/models/factory.py
+      - src/evaluation/metrics.py
+      - data/features/train.csv
+      - data/features/test.csv
+    outs:
+      - models/recommender_net.pt
+    metrics:
+      - reports/torch_metrics.json:
+          cache: false
