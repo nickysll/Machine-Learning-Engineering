@@ -37,4 +37,6 @@ COPY --from=builder /app/.venv /app/.venv
 
 COPY . .
 
+RUN git init
+
 CMD ["dvc", "repro"]
