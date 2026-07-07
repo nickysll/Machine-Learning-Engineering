@@ -1,7 +1,7 @@
 schema: '2.0'
 stages:
   download_data:
-    cmd: poetry run python scripts/download_data.py
+    cmd: python scripts/download_data.py
     deps:
     - path: scripts/download_data.py
       hash: md5
@@ -14,7 +14,7 @@ stages:
       size: 3303135
       nfiles: 5
   preprocess:
-    cmd: poetry run python -m src.data.preprocess
+    cmd: python -m src.data.preprocess
     deps:
     - path: data/raw/movielens_100k
       hash: md5
@@ -31,7 +31,7 @@ stages:
       md5: 75b325f660b1c6355682c642a6dd635a
       size: 7297265
   feature_eng:
-    cmd: poetry run python -m src.data.feature_engineering
+    cmd: python -m src.data.feature_engineering
     deps:
     - path: data/processed/interactions.csv
       hash: md5
@@ -59,8 +59,8 @@ stages:
       md5: a0255064c003728071a77902f143c06c
       size: 4682
   train:
-    cmd: poetry run python -m src.models.train_torch --run-name
-      dvc_recommender_net --device cpu
+    cmd: python -m src.models.train_torch --run-name dvc_recommender_net
+      --device cpu
     deps:
     - path: data/features/test.csv
       hash: md5
