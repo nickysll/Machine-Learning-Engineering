@@ -142,7 +142,8 @@ Para transformar o problema em uma tarefa supervisionada inicial, foi criado um 
 | `models/` | Modelos treinados e artefatos futuros |
 | `tests/` | Testes automatizados |
 
-Os arquivos gerados dentro de `data/raw/`, `data/processed/` e `data/features/` não são versionados diretamente pelo Git. Eles serão controlados posteriormente com DVC.
+Os arquivos gerados dentro de `data/raw/`, `data/processed/`, `data/features/` e `models/` não são versionados diretamente pelo Git. Esses artefatos são controlados pelo DVC, permitindo rastreabilidade e reprodutibilidade do pipeline sem armazenar arquivos grandes diretamente no repositório Git.
+
 
 ---
 
@@ -253,6 +254,70 @@ Test rows: 20168
 
 ---
 
+## Execução do pipeline com DVC
+
+O pipeline completo foi configurado com DVC, permitindo executar todas as etapas de forma reproduzível.
+
+Para rodar o pipeline localmente:
+
+```bash
+poetry run dvc repro
+```
+
+O pipeline executa as seguintes etapas:
+
+```text
+download_data -> preprocess -> feature_eng -> train
+```
+
+Durante a execução, são gerados os dados brutos, os dados processados, as bases de treino e teste, o modelo treinado e o arquivo de métricas.
+
+## Execução com Docker
+
+O projeto também foi containerizado com Docker, garantindo que o pipeline possa ser executado em um ambiente isolado e reproduzível.
+
+Para construir a imagem:
+
+```bash
+docker compose build
+```
+
+Para executar o pipeline dentro do container, utilizando MLflow com backend SQLite:
+
+```bash
+docker compose run --rm --no-deps -e MLFLOW_TRACKING_URI=sqlite:////app/mlruns/mlflow.db pipeline
+```
+
+Esse comando executa o pipeline DVC dentro do container e registra os experimentos do MLflow em um banco SQLite local.
+
+## MLflow
+
+O projeto utiliza MLflow para rastreamento de experimentos. Durante o treinamento, são registrados parâmetros, métricas e informações do modelo.
+
+Principais parâmetros registrados:
+
+* `batch_size`
+* `epochs`
+* `learning_rate`
+* `embedding_dim`
+* `hidden_dim`
+* `dropout_rate`
+* `device`
+
+As métricas finais são salvas em:
+
+```text
+reports/torch_metrics.json
+```
+
+O modelo treinado é salvo em:
+
+```text
+models/recommender_net.pt
+```
+
+-----
+
 ## Etapas de desenvolvimento
 
 - [x] Estrutura inicial do projeto
@@ -272,7 +337,7 @@ Test rows: 20168
 - [x] Tracking de experimentos com MLflow
 - [x] Versionamento dos dados com DVC
 - [x] Pipeline reproduzível com `dvc repro`
-- [ ] Containerização com Docker
+- [x] Containerização com Docker
 - [ ] Model Registry no MLflow
 - [ ] Model Card
 - [ ] Documentação final
@@ -302,7 +367,8 @@ poetry run pre-commit run --all-files
 poetry run pytest
 ```
 
-No momento, os testes automatizados ainda serão adicionados.
+A suíte de testes automatizados foi implementada com Pytest. Atualmente, o projeto possui 6 testes passando, cobrindo validações essenciais do pipeline e garantindo maior segurança para alterações futuras.
+
 
 ---
 
