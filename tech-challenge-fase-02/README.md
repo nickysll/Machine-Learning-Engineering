@@ -265,13 +265,13 @@ Test rows: 20168
 - [x] Desenvolvimento do preprocessamento
 - [x] Engenharia de atributos
 - [x] Configuração de pre-commit hooks
-- [ ] Testes automatizados
-- [ ] Implementação do baseline com Scikit-Learn
-- [ ] Implementação do modelo neural com PyTorch
-- [ ] Avaliação dos modelos
-- [ ] Tracking de experimentos com MLflow
-- [ ] Versionamento dos dados com DVC
-- [ ] Pipeline reproduzível com `dvc repro`
+- [x] Testes automatizados
+- [x] Implementação do baseline com Scikit-Learn
+- [x] Implementação do modelo neural com PyTorch
+- [x] Avaliação dos modelos
+- [x] Tracking de experimentos com MLflow
+- [x] Versionamento dos dados com DVC
+- [x] Pipeline reproduzível com `dvc repro`
 - [ ] Containerização com Docker
 - [ ] Model Registry no MLflow
 - [ ] Model Card
@@ -346,6 +346,39 @@ feat: add baseline model
 ```
 
 ---
+## Resultados do modelo
+
+O modelo final implementado foi uma rede neural de recomendação baseada em embeddings, utilizando PyTorch. A arquitetura considera representações vetoriais para usuários e itens, combinando essas informações em camadas densas para prever a probabilidade de uma interação positiva.
+
+O treinamento foi executado com os seguintes principais parâmetros:
+
+* `batch_size`: 512
+* `epochs`: 20
+* `learning_rate`: 0.001
+* `embedding_dim`: 32
+* `hidden_dim`: 64
+* `dropout_rate`: 0.2
+* `patience`: 3
+* `device`: CPU
+
+Durante o treinamento, foi utilizado early stopping para evitar overfitting. O processo foi interrompido automaticamente na época 14, após estabilização da perda de validação.
+
+As métricas finais obtidas foram:
+
+| Métrica   |  Valor |
+| --------- | -----: |
+| Accuracy  | 0.6989 |
+| Precision | 0.6809 |
+| Recall    | 0.7059 |
+| F1-score  | 0.6932 |
+| ROC AUC   | 0.7650 |
+| Loss      | 0.5822 |
+
+Os resultados indicam que o modelo conseguiu aprender padrões relevantes nas interações entre usuários e itens. O ROC AUC de 0.7650 demonstra uma capacidade satisfatória de diferenciação entre interações positivas e negativas, superando um comportamento aleatório. Além disso, o equilíbrio entre precision, recall e F1-score mostra que o modelo apresenta desempenho consistente tanto na identificação de recomendações relevantes quanto na recuperação de casos positivos.
+
+Como próximos passos, o modelo pode ser aprimorado com novas features, ajuste de hiperparâmetros, validação com métricas específicas de recomendação, como Precision@K, Recall@K e NDCG@K, além da comparação com modelos baseline mais simples.
+
+-----
 
 ## Referências
 
