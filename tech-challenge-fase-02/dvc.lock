@@ -93,5 +93,5 @@ stages:
       size: 1351741
     - path: reports/torch_metrics.json
       hash: md5
-      md5: 7b71eba45932564eff10010c5448137f
-      size: 593
+      md5: 1ad406f0840204e5fa0b019d459c965e
+      size: 594
