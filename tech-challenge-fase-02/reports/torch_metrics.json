@@ -19,5 +19,9 @@
         "hidden_dim": 64,
         "dropout_rate": 0.2,
         "device": "cpu"
+    },
+    "registry": {
+        "registered_model_name": "RecommenderNet",
+        "alias": "candidate"
     }
 }

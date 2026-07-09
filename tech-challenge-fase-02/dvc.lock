@@ -84,8 +84,8 @@ stages:
       size: 1825
     - path: src/models/train_torch.py
       hash: md5
-      md5: 1631958556069e21ee4755c8d083c2f9
-      size: 12115
+      md5: 40a29b013defac6610a02d189de9e7a8
+      size: 19865
     outs:
     - path: models/recommender_net.pt
       hash: md5
@@ -93,5 +93,5 @@ stages:
       size: 1351741
     - path: reports/torch_metrics.json
       hash: md5
-      md5: 1ad406f0840204e5fa0b019d459c965e
-      size: 594
+      md5: ab8c85763e5238282517c668e2735996
+      size: 698

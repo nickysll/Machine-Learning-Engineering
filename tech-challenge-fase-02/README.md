@@ -1,42 +1,38 @@
 # Tech Challenge - Fase 02 | Machine Learning Engineering
 
-## Sobre o desafio
+## Sobre o projeto
 
-Este projeto foi desenvolvido como parte da **Fase 02** da Pós-Graduação em **Machine Learning Engineering** da FIAP.
+Este projeto foi desenvolvido para o **Tech Challenge da Fase 02** da Pós-Graduação em **Machine Learning Engineering** da FIAP.
 
-O objetivo desta etapa é consolidar conhecimentos de Engenharia de Machine Learning por meio da construção de uma solução completa, contemplando modelagem, versionamento de dados, rastreamento de experimentos, testes automatizados, containerização e documentação técnica.
+A ideia principal foi construir um projeto de recomendação de ponta a ponta, não ficando apenas no treinamento do modelo. Além da parte de Machine Learning, também foram aplicadas práticas de organização de código, versionamento de dados, rastreamento de experimentos, testes e execução com Docker.
 
----
-
-## Problema proposto
-
-Uma empresa de e-commerce precisa de um sistema de recomendação de produtos baseado no comportamento dos usuários.
-
-O sistema deve utilizar uma rede neural, como uma **MLP** ou um modelo baseado em **embeddings**, desenvolvida em **PyTorch**.
-
-Além do modelo neural, o projeto contempla o ciclo completo de desenvolvimento de Machine Learning, incluindo:
-
-- pipeline de treinamento;
-- comparação com modelo baseline;
-- versionamento de dados e artefatos com DVC;
-- rastreamento de experimentos com MLflow;
-- containerização com Docker;
-- testes automatizados;
-- organização modular seguindo princípios de Clean Code.
+O foco foi criar uma solução simples, mas bem estruturada, que pudesse ser reproduzida por outra pessoa sem depender apenas do ambiente local.
 
 ---
 
-## Objetivos do projeto
+## Problema
 
-- Desenvolver um sistema de recomendação utilizando PyTorch.
-- Criar um modelo baseline com Scikit-Learn.
-- Comparar o modelo neural com uma abordagem mais simples.
-- Aplicar boas práticas de Engenharia de Software.
-- Garantir reprodutibilidade do ambiente e dos experimentos.
-- Versionar dados, métricas e artefatos com DVC.
-- Rastrear experimentos com MLflow.
-- Containerizar a execução do pipeline com Docker.
-- Documentar decisões técnicas, resultados e limitações.
+O problema proposto simula o cenário de uma empresa de e-commerce que quer recomendar produtos para seus usuários com base no comportamento de interação.
+
+Como base para o projeto, foi utilizado o dataset MovieLens. Apesar de ser um dataset de filmes, a estrutura é parecida com um problema de recomendação de produtos: existem usuários, itens e interações entre eles.
+
+A partir dessas interações, o objetivo foi treinar um modelo capaz de prever se uma interação entre usuário e item tende a ser positiva ou negativa.
+
+---
+
+## Objetivos
+
+Os principais objetivos deste projeto foram:
+
+- preparar um dataset para um problema de recomendação;
+- criar um target binário a partir das avaliações dos usuários;
+- implementar um baseline com Scikit-Learn;
+- desenvolver um modelo neural com PyTorch;
+- organizar o pipeline com DVC;
+- registrar experimentos e métricas com MLflow;
+- criar testes automatizados;
+- rodar o pipeline em Docker;
+- documentar os resultados, limitações e próximos passos.
 
 ---
 
@@ -44,76 +40,75 @@ Além do modelo neural, o projeto contempla o ciclo completo de desenvolvimento 
 
 ### Dataset escolhido
 
-**MovieLens Latest Small**
+Foi utilizado o **MovieLens Latest Small**, baixado via KaggleHub.
 
-### Fonte
+### Por que esse dataset?
 
-Dataset obtido via KaggleHub a partir de uma versão do MovieLens.
+O MovieLens é bastante usado em estudos e projetos de recomendação. Ele tem uma estrutura simples de entender, mas suficiente para trabalhar conceitos importantes, como interação usuário-item, matriz de recomendação, target supervisionado e modelos baseados em embeddings.
 
-### Justificativa
+Mesmo não sendo um dataset real de e-commerce, ele funciona bem para simular esse tipo de problema.
 
-O MovieLens foi escolhido por ser um dataset clássico para problemas de recomendação, contendo interações entre usuários e itens.
+### Arquivos utilizados
 
-Embora o domínio original seja filmes, a estrutura do problema é equivalente a um cenário de e-commerce, em que usuários interagem com produtos e o modelo aprende padrões para recomendar novos itens.
-
-### Arquivos principais
-
-Os arquivos brutos são armazenados localmente em:
+Os dados brutos ficam em:
 
 ```text
 data/raw/movielens_100k/
-````
+```
 
-Principais arquivos utilizados:
+Principais arquivos:
 
-* `ratings.csv`: interações entre usuários e itens;
-* `movies.csv`: metadados dos itens;
-* `tags.csv`: tags atribuídas por usuários;
-* `links.csv`: identificadores externos dos filmes.
+| Arquivo | Descrição |
+|---|---|
+| `ratings.csv` | Avaliações dos usuários para os filmes |
+| `movies.csv` | Informações dos filmes |
+| `tags.csv` | Tags atribuídas por usuários |
+| `links.csv` | Identificadores externos dos filmes |
 
-### Colunas principais do `ratings.csv`
+O arquivo mais importante para o treinamento foi o `ratings.csv`.
 
-| Coluna      | Descrição                   |
-| ----------- | --------------------------- |
-| `userId`    | Identificador do usuário    |
-| `movieId`   | Identificador do item       |
-| `rating`    | Avaliação dada pelo usuário |
-| `timestamp` | Momento da interação        |
+### Colunas principais
 
-### Definição de interação
+| Coluna | Descrição |
+|---|---|
+| `userId` | Identificador do usuário |
+| `movieId` | Identificador do item |
+| `rating` | Nota dada pelo usuário |
+| `timestamp` | Momento da interação |
 
-Uma interação ocorre quando um usuário avalia um item.
+---
 
-### Target
+## Definição do target
 
-Para transformar o problema em uma tarefa supervisionada inicial, foi criado um target binário:
+Como o dataset possui avaliações numéricas, foi necessário transformar o problema em uma classificação binária.
 
-| Regra         | Target                |
-| ------------- | --------------------- |
+A regra usada foi:
+
+| Regra | Target |
+|---|---|
 | `rating >= 4` | 1, interação positiva |
-| `rating < 4`  | 0, interação negativa |
+| `rating < 4` | 0, interação negativa |
+
+Assim, o modelo tenta prever se uma interação entre usuário e item seria positiva ou não.
 
 ---
 
 ## Solução implementada
 
-A solução foi estruturada como um pipeline reprodutível de Machine Learning.
-
-O fluxo principal é:
+O projeto foi organizado como um pipeline de Machine Learning com quatro etapas principais:
 
 ```text
 download_data -> preprocess -> feature_eng -> train
 ```
 
-As etapas executam:
+Cada etapa tem uma responsabilidade:
 
-1. download automático do dataset;
-2. preprocessamento das interações;
-3. criação das bases de treino e teste;
-4. treinamento do modelo neural em PyTorch;
-5. geração de métricas;
-6. salvamento do modelo treinado;
-7. rastreamento do experimento com MLflow.
+1. **download_data**: baixa o dataset;
+2. **preprocess**: trata as interações e cria a base processada;
+3. **feature_eng**: cria os mapeamentos de usuários e itens e separa treino/teste;
+4. **train**: treina o modelo em PyTorch e salva métricas e artefatos.
+
+O pipeline foi configurado com DVC para facilitar a reprodução dos resultados.
 
 ---
 
@@ -184,45 +179,45 @@ As etapas executam:
 
 ## Organização das pastas
 
-| Pasta             | Finalidade                                           |
-| ----------------- | ---------------------------------------------------- |
-| `data/raw/`       | Dados brutos baixados localmente                     |
-| `data/processed/` | Dados tratados pelo preprocessamento                 |
-| `data/features/`  | Bases finais para treino e teste                     |
-| `src/configs/`    | Configurações do projeto                             |
-| `src/data/`       | Código de preprocessamento e engenharia de atributos |
-| `src/evaluation/` | Métricas e funções auxiliares de avaliação           |
-| `src/models/`     | Código dos modelos, treino e arquitetura neural      |
-| `scripts/`        | Scripts auxiliares de ambiente e download            |
-| `reports/`        | Documentação auxiliar, métricas e resultados         |
-| `models/`         | Modelo treinado e artefatos de modelagem             |
-| `tests/`          | Testes automatizados                                 |
+| Pasta | Finalidade |
+|---|---|
+| `data/raw/` | Dados brutos baixados do MovieLens |
+| `data/processed/` | Base tratada após o preprocessamento |
+| `data/features/` | Bases de treino, teste e mapeamentos |
+| `src/configs/` | Configurações do projeto |
+| `src/data/` | Scripts de preprocessamento e feature engineering |
+| `src/evaluation/` | Funções de métricas |
+| `src/models/` | Código dos modelos e treinamento |
+| `scripts/` | Scripts auxiliares |
+| `reports/` | Métricas, anotações e documentações |
+| `models/` | Modelo treinado |
+| `tests/` | Testes automatizados |
 
-Os arquivos gerados dentro de `data/raw/`, `data/processed/`, `data/features/` e `models/` não são versionados diretamente pelo Git. Esses artefatos são controlados pelo DVC, permitindo rastreabilidade e reprodutibilidade sem armazenar arquivos grandes diretamente no repositório Git.
+Os arquivos gerados em `data/` e `models/` não são versionados diretamente pelo Git. Eles são controlados pelo DVC, para evitar subir arquivos grandes ou gerados automaticamente no repositório.
 
 ---
 
 ## Tecnologias utilizadas
 
-* Python 3.12
-* Poetry
-* Pandas
-* NumPy
-* Scikit-Learn
-* PyTorch
-* MLflow
-* DVC
-* Docker
-* Docker Compose
-* Ruff
-* Pre-commit
-* Pytest
-* Pydantic Settings
-* KaggleHub
+- Python 3.12
+- Poetry
+- Pandas
+- NumPy
+- Scikit-Learn
+- PyTorch
+- MLflow
+- DVC
+- Docker
+- Docker Compose
+- Ruff
+- Pre-commit
+- Pytest
+- Pydantic Settings
+- KaggleHub
 
 ---
 
-## Configuração do ambiente local
+## Como configurar o projeto
 
 ### 1. Clonar o repositório
 
@@ -231,21 +226,21 @@ git clone <url-do-repositorio>
 cd tech-challenge-fase-02
 ```
 
-### 2. Instalar dependências
+### 2. Instalar as dependências
 
 ```bash
 poetry install
 ```
 
-### 3. Criar arquivo `.env`
+### 3. Criar o arquivo `.env`
 
-Use o arquivo `.env.example` como referência:
+Use o `.env.example` como base:
 
 ```bash
 cp .env.example .env
 ```
 
-Exemplo de variáveis esperadas:
+Exemplo:
 
 ```env
 MLFLOW_TRACKING_URI=sqlite:///mlflow.db
@@ -258,7 +253,7 @@ DVC_REMOTE=local
 poetry run python scripts/validate_env.py
 ```
 
-Resultado esperado:
+Saída esperada:
 
 ```text
 Environment validation: OK
@@ -266,9 +261,9 @@ Environment validation: OK
 
 ---
 
-## Execução local do pipeline
+## Como rodar o pipeline localmente
 
-### 1. Download do dataset
+### Download dos dados
 
 ```bash
 poetry run python scripts/download_data.py
@@ -280,7 +275,7 @@ Saída esperada:
 Dataset downloaded to: data/raw/movielens_100k
 ```
 
-### 2. Preprocessamento
+### Preprocessamento
 
 ```bash
 poetry run python -m src.data.preprocess
@@ -293,7 +288,7 @@ Processed data saved to: data/processed/interactions.csv
 Rows: 100836
 ```
 
-### 3. Engenharia de atributos
+### Feature engineering
 
 ```bash
 poetry run python -m src.data.feature_engineering
@@ -308,7 +303,7 @@ Train rows: 80668
 Test rows: 20168
 ```
 
-### 4. Treinamento do modelo PyTorch
+### Treinamento do modelo
 
 ```bash
 poetry run python -m src.models.train_torch --run-name local_recommender_net --device cpu
@@ -316,29 +311,29 @@ poetry run python -m src.models.train_torch --run-name local_recommender_net --d
 
 ---
 
-## Execução com DVC
+## Como rodar com DVC
 
-O pipeline completo foi configurado com DVC.
+O DVC foi usado para organizar e reproduzir as etapas do pipeline.
 
-Para executar todas as etapas de forma reproduzível:
+Para rodar tudo de uma vez:
 
 ```bash
 poetry run dvc repro
 ```
 
-Para verificar o status do pipeline:
+Para verificar se existe alguma etapa desatualizada:
 
 ```bash
 poetry run dvc status
 ```
 
-Para visualizar o grafo do pipeline:
+Para visualizar o fluxo do pipeline:
 
 ```bash
 poetry run dvc dag
 ```
 
-Fluxo do pipeline:
+Fluxo esperado:
 
 ```text
 +---------------+
@@ -366,9 +361,9 @@ Fluxo do pipeline:
 
 ---
 
-## Execução com Docker
+## Como rodar com Docker
 
-O projeto foi containerizado com Docker para permitir execução em ambiente isolado e reprodutível.
+O projeto também pode ser executado dentro de um container Docker.
 
 ### Construir a imagem
 
@@ -376,13 +371,13 @@ O projeto foi containerizado com Docker para permitir execução em ambiente iso
 docker compose build
 ```
 
-### Executar o pipeline dentro do container
+### Rodar o pipeline no container
 
 ```bash
 docker compose run --rm --no-deps -e MLFLOW_TRACKING_URI=sqlite:////app/mlruns/mlflow.db pipeline
 ```
 
-Esse comando executa o pipeline DVC dentro do container e registra o experimento do MLflow em um backend SQLite local.
+Esse comando roda o pipeline DVC dentro do container e usa um backend SQLite para o MLflow.
 
 Ao final da execução, a saída esperada inclui:
 
@@ -397,41 +392,30 @@ Use `dvc push` to send your updates to remote storage.
 
 ## MLflow
 
-O projeto utiliza MLflow para rastreamento de experimentos.
+O MLflow foi usado para registrar os experimentos do modelo.
 
 Durante o treinamento, são registrados:
 
-* nome da execução;
-* parâmetros do modelo;
-* métricas de avaliação;
-* artefatos gerados.
+- parâmetros do treino;
+- métricas finais;
+- artefatos gerados;
+- modelo treinado.
 
-Principais parâmetros registrados:
+Na execução com Docker, foi usado SQLite como backend do MLflow, para evitar depender de um servidor externo durante a execução do pipeline.
 
-| Parâmetro       | Valor |
-| --------------- | ----: |
-| `batch_size`    |   512 |
-| `epochs`        |    20 |
-| `learning_rate` | 0.001 |
-| `patience`      |     3 |
-| `embedding_dim` |    32 |
-| `hidden_dim`    |    64 |
-| `dropout_rate`  |   0.2 |
-| `device`        |   CPU |
-
-As métricas finais são salvas em:
+As métricas finais ficam em:
 
 ```text
 reports/torch_metrics.json
 ```
 
-O modelo treinado é salvo em:
+O modelo treinado fica em:
 
 ```text
 models/recommender_net.pt
 ```
 
-O registro formal no MLflow Model Registry é considerado uma evolução futura do projeto.
+O uso do MLflow Model Registry ficou como uma melhoria futura. Nesta versão, o foco foi garantir o tracking dos experimentos e o salvamento dos artefatos.
 
 ---
 
@@ -439,59 +423,63 @@ O registro formal no MLflow Model Registry é considerado uma evolução futura 
 
 ### Baseline com Scikit-Learn
 
-Foi implementado um modelo baseline utilizando Scikit-Learn para servir como referência comparativa inicial.
+Foi criado um modelo baseline com Scikit-Learn para ter uma referência inicial de desempenho.
 
-As métricas do baseline são armazenadas em:
+As métricas do baseline são salvas em:
 
 ```text
 reports/baseline_metrics.json
 ```
 
-### Recommender Net com PyTorch
+### Modelo neural com PyTorch
 
-O modelo principal é uma rede neural de recomendação baseada em embeddings.
+O modelo principal foi uma rede neural baseada em embeddings.
 
-A arquitetura utiliza representações vetoriais para usuários e itens, combinando essas informações em camadas densas para prever a probabilidade de uma interação positiva.
+A ideia foi transformar usuários e itens em vetores aprendidos durante o treinamento. Esses vetores são combinados e passam por camadas densas para prever se a interação tende a ser positiva.
 
-O modelo foi treinado com early stopping para evitar overfitting.
+Essa abordagem foi escolhida porque embeddings são comuns em problemas de recomendação e permitem que o modelo aprenda relações entre usuários e itens sem depender apenas de regras manuais.
 
 ---
 
-## Resultados do modelo
+## Resultados
 
-O modelo final implementado foi uma rede neural de recomendação baseada em embeddings, utilizando PyTorch.
+O modelo final foi treinado com os seguintes parâmetros principais:
 
-O treinamento foi executado com os seguintes principais parâmetros:
+| Parâmetro | Valor |
+|---|---:|
+| Batch size | 512 |
+| Épocas máximas | 20 |
+| Learning rate | 0.001 |
+| Embedding dim | 32 |
+| Hidden dim | 64 |
+| Dropout | 0.2 |
+| Patience | 3 |
+| Device | CPU |
 
-* `batch_size`: 512
-* `epochs`: 20
-* `learning_rate`: 0.001
-* `embedding_dim`: 32
-* `hidden_dim`: 64
-* `dropout_rate`: 0.2
-* `patience`: 3
-* `device`: CPU
+O treinamento utilizou early stopping, então o modelo poderia treinar por até 20 épocas, mas parou antes quando a validação deixou de melhorar.
 
-Durante o treinamento, foi utilizado early stopping para evitar overfitting. O processo foi interrompido automaticamente após estabilização da perda de validação.
+Métricas finais:
 
-As métricas finais obtidas foram:
-
-| Métrica   |  Valor |
-| --------- | -----: |
-| Accuracy  | 0.6989 |
+| Métrica | Valor |
+|---|---:|
+| Accuracy | 0.6989 |
 | Precision | 0.6809 |
-| Recall    | 0.7059 |
-| F1-score  | 0.6932 |
-| ROC AUC   | 0.7650 |
-| Loss      | 0.5822 |
+| Recall | 0.7059 |
+| F1-score | 0.6932 |
+| ROC AUC | 0.7650 |
+| Loss | 0.5822 |
 
-Os resultados indicam que o modelo conseguiu aprender padrões relevantes nas interações entre usuários e itens. O ROC AUC de 0.7650 demonstra capacidade satisfatória de diferenciação entre interações positivas e negativas, superando um comportamento aleatório. Além disso, o equilíbrio entre precision, recall e F1-score mostra que o modelo apresenta desempenho consistente tanto na identificação de recomendações relevantes quanto na recuperação de casos positivos.
+O resultado ficou adequado para uma primeira versão do modelo neural.
+
+A acurácia ficou próxima de 70%, e o F1-score mostra que o modelo manteve um equilíbrio razoável entre precision e recall. O ROC AUC de 0.7650 indica que o modelo conseguiu diferenciar interações positivas e negativas melhor do que uma escolha aleatória.
+
+Ainda assim, esse modelo deve ser visto como uma primeira versão. Para um sistema real de recomendação, seria importante incluir métricas específicas de ranking, como Precision@K, Recall@K e NDCG@K.
 
 ---
 
-## Qualidade de código
+## Testes e qualidade de código
 
-Este projeto utiliza Ruff, pre-commit e Pytest para manter qualidade, padronização e segurança nas alterações.
+O projeto usa Ruff, pre-commit e Pytest para manter o código mais organizado.
 
 ### Rodar Ruff
 
@@ -499,13 +487,13 @@ Este projeto utiliza Ruff, pre-commit e Pytest para manter qualidade, padroniza�
 poetry run ruff check .
 ```
 
-### Rodar formatação com Ruff
+### Formatar com Ruff
 
 ```bash
 poetry run ruff format .
 ```
 
-### Rodar pre-commit em todos os arquivos
+### Rodar pre-commit
 
 ```bash
 poetry run pre-commit run --all-files
@@ -523,25 +511,23 @@ Resultado atual:
 6 passed
 ```
 
-A suíte de testes automatizados cobre validações essenciais de preprocessamento, engenharia de atributos e métricas.
+Os testes cobrem partes principais do preprocessamento, feature engineering e métricas.
 
 ---
 
 ## Versionamento com Git e DVC
 
-O Git é utilizado para versionar código, configurações e documentação.
+O Git versiona o código, configurações e documentação.
 
-O DVC é utilizado para controlar dados e artefatos gerados pelo pipeline, como:
+O DVC controla os dados e artefatos gerados pelo pipeline, como:
 
-* dados brutos;
-* dados processados;
-* bases de treino e teste;
-* modelo treinado;
-* métricas do pipeline.
+- dados brutos;
+- dados processados;
+- bases de treino e teste;
+- modelo treinado;
+- métricas do pipeline.
 
-Arquivos grandes e artefatos locais não são armazenados diretamente no Git.
-
-Exemplos de arquivos e pastas ignorados:
+Alguns arquivos e pastas são mantidos fora do Git:
 
 ```text
 .venv/
@@ -554,56 +540,57 @@ data/features/
 models/*.pt
 ```
 
+Isso ajuda a manter o repositório mais limpo e evita versionar arquivos pesados ou gerados automaticamente.
+
 ---
 
-## Etapas de desenvolvimento
+## Etapas do projeto
 
-* [x] Estrutura inicial do projeto
-* [x] Configuração do ambiente
-* [x] Criação do `.env.example`
-* [x] Criação do `settings.py`
-* [x] Criação do `validate_env.py`
-* [x] Script de download do dataset
-* [x] Documentação inicial do dataset
-* [x] Desenvolvimento do preprocessamento
-* [x] Engenharia de atributos
-* [x] Configuração de pre-commit hooks
-* [x] Testes automatizados
-* [x] Implementação do baseline com Scikit-Learn
-* [x] Implementação do modelo neural com PyTorch
-* [x] Avaliação dos modelos
-* [x] Tracking de experimentos com MLflow
-* [x] Versionamento dos dados com DVC
-* [x] Pipeline reproduzível com `dvc repro`
-* [x] Containerização com Docker
-* [x] Documentação principal do projeto
-* [ ] Model Registry no MLflow
-* [ ] Model Card
-* [ ] Vídeo STAR
+- [x] Estrutura inicial do projeto
+- [x] Configuração do ambiente
+- [x] Criação do `.env.example`
+- [x] Criação do `settings.py`
+- [x] Criação do `validate_env.py`
+- [x] Script de download do dataset
+- [x] Documentação inicial do dataset
+- [x] Preprocessamento dos dados
+- [x] Engenharia de atributos
+- [x] Configuração de pre-commit hooks
+- [x] Testes automatizados
+- [x] Baseline com Scikit-Learn
+- [x] Modelo neural com PyTorch
+- [x] Avaliação dos modelos
+- [x] Tracking com MLflow
+- [x] Versionamento com DVC
+- [x] Pipeline reproduzível com `dvc repro`
+- [x] Execução com Docker
+- [x] Documentação principal do projeto
+- [ ] Model Registry no MLflow
+- [ ] Model Card
+- [ ] Vídeo STAR
 
 ---
 
 ## Padrão de commits
 
-Este projeto utiliza uma convenção de commits semânticos baseada no padrão Conventional Commits.
+O projeto segue uma convenção simples baseada em Conventional Commits.
 
-### Tipos utilizados
+Exemplos:
 
-| Tipo       | Quando usar                                       | Exemplo                                            |
-| ---------- | ------------------------------------------------- | -------------------------------------------------- |
-| `feat`     | Nova funcionalidade                               | `feat: add data preprocessing step`                |
-| `fix`      | Correção de bug ou comportamento incorreto        | `fix: copy dataset files recursively`              |
-| `docs`     | Alterações em documentação                        | `docs: update project documentation`               |
-| `chore`    | Tarefas de manutenção ou configuração             | `chore: configure pre-commit hooks`                |
-| `test`     | Criação ou alteração de testes                    | `test: add preprocessing tests`                    |
-| `style`    | Formatação de código sem alterar comportamento    | `style: format data pipeline files`                |
-| `refactor` | Refatoração sem mudar resultado final             | `refactor: simplify feature engineering functions` |
-| `data`     | Alterações relacionadas ao versionamento de dados | `data: track raw dataset with dvc`                 |
+| Tipo | Quando usar | Exemplo |
+|---|---|---|
+| `feat` | Nova funcionalidade | `feat: add data preprocessing step` |
+| `fix` | Correção | `fix: copy dataset files recursively` |
+| `docs` | Documentação | `docs: update project readme` |
+| `chore` | Configuração ou manutenção | `chore: configure pre-commit hooks` |
+| `test` | Testes | `test: add preprocessing tests` |
+| `refactor` | Refatoração | `refactor: simplify feature engineering functions` |
+| `data` | Versionamento ou organização de dados | `data: track raw dataset with dvc` |
 
-A mensagem deve seguir o formato:
+Formato usado:
 
 ```bash
-tipo: descrição curta da alteração
+tipo: descrição curta
 ```
 
 Exemplo:
@@ -614,40 +601,13 @@ feat: add baseline model
 
 ---
 
-## Limitações
-
-Apesar dos resultados positivos, o projeto possui algumas limitações:
-
-* o dataset é baseado em avaliações explícitas, não em navegação real de e-commerce;
-* o target binário foi criado a partir da nota do usuário;
-* o modelo não considera contexto de sessão, preço, estoque, categoria real de produto ou sazonalidade;
-* as métricas atuais avaliam a classificação da interação, mas ainda não incluem métricas específicas de ranking;
-* o modelo foi treinado em CPU para manter simplicidade e reprodutibilidade local.
-
----
-
-## Próximos passos
-
-Como evolução futura, o projeto pode ser aprimorado com:
-
-* criação de um Model Card detalhado;
-* registro formal do modelo no MLflow Model Registry;
-* uso de métricas específicas de recomendação, como Precision@K, Recall@K e NDCG@K;
-* comparação com outros algoritmos de recomendação;
-* ajuste de hiperparâmetros;
-* inclusão de novas features;
-* criação de uma API para servir recomendações;
-* criação de pipeline de CI/CD com GitHub Actions.
-
----
-
 ## Referências
 
-* Documentação oficial do Python.
-* Documentação oficial do PyTorch.
-* Documentação oficial do Scikit-Learn.
-* Documentação oficial do MLflow.
-* Documentação oficial do DVC.
-* Documentação oficial do Docker.
-* MovieLens Dataset.
-* Material das disciplinas da FIAP.
+- Documentação oficial do Python.
+- Documentação oficial do PyTorch.
+- Documentação oficial do Scikit-Learn.
+- Documentação oficial do MLflow.
+- Documentação oficial do DVC.
+- Documentação oficial do Docker.
+- MovieLens Dataset.
+- Material das disciplinas da FIAP.
