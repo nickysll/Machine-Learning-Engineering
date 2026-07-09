@@ -600,6 +600,23 @@ feat: add baseline model
 ```
 
 ---
+## Deploy em nuvem
+
+Como bônus, foi criado um container web com FastAPI e Docker para disponibilizar uma URL pública do projeto.
+
+A API expõe endpoints simples para validação do serviço e consulta das informações do modelo:
+
+- `/`: status geral da aplicação;
+- `/health`: health check do container;
+- `/model-info`: informações do modelo e métricas finais;
+- `/docs`: documentação automática da API.
+
+URL pública:
+
+```text
+https://tech-challenge-fase-02-api.onrender.com
+
+----
 
 ## Referências
 
