@@ -1,0 +1,30 @@
+[project]
+name = "tech-challenge-fase-03"
+version = "0.1.0"
+description = "Deploy de modelo de ML com CI/CD, monitoramento e otimização de latência."
+authors = [
+    {name = "Your Name",email = "you@example.com"}
+]
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "pandas (>=3.0.5,<4.0.0)",
+    "numpy (>=2.5.2,<3.0.0)",
+    "scikit-learn (>=1.9.0,<2.0.0)",
+    "joblib (>=1.5.3,<2.0.0)",
+    "fastapi (>=0.141.1,<0.142.0)",
+    "uvicorn (>=0.52.4,<0.53.0)",
+    "pydantic (>=2.13.4,<3.0.0)",
+    "prometheus-client (>=0.26.0,<0.27.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "pytest (>=9.1.1,<10.0.0)",
+    "httpx (>=0.28.1,<0.29.0)",
+    "ruff (>=0.16.4,<0.17.0)"
+]
