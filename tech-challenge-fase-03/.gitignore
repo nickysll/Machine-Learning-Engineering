@@ -32,3 +32,11 @@ tmp/
 airflow/logs/
 airflow/airflow.db
 airflow/airflow-webserver.pid
+
+# Dataset generated locally
+data/raw/*.parquet
+data/processed/*.parquet
+
+# Trained models
+models/*.joblib
+models/*.onnx
