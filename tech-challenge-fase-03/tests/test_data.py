@@ -2,7 +2,6 @@ from pathlib import Path
 
 import pandas as pd
 
-
 TRAIN_PATH = Path("data/raw/train.parquet")
 TEST_PATH = Path("data/raw/test.parquet")
 

@@ -7,7 +7,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.pipeline import Pipeline
 
-
 TRAIN_PATH = Path("data/raw/train.parquet")
 TEST_PATH = Path("data/raw/test.parquet")
 MODEL_DIR = Path("models")

@@ -2,7 +2,6 @@ from pathlib import Path
 
 from datasets import load_dataset
 
-
 DATASET_NAME = "TimSchopf/medical_abstracts"
 RAW_DATA_DIR = Path("data/raw")
 
@@ -19,7 +18,7 @@ def main() -> None:
     print("\nDataset loaded successfully.")
     print(dataset)
 
-    for split in dataset.keys():
+    for split in dataset:
         output_path = RAW_DATA_DIR / f"{split}.parquet"
 
         dataframe = dataset[split].to_pandas()

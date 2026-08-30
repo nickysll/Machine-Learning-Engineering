@@ -1,6 +1,5 @@
 from prometheus_client import Counter, Histogram
 
-
 REQUEST_COUNT = Counter(
     "api_requests_total",
     "Total number of API requests",

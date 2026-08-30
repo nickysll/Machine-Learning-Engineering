@@ -8,7 +8,6 @@ from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 from app.metrics import REQUEST_COUNT, REQUEST_LATENCY
 from app.schemas import PredictionRequest, PredictionResponse
 
-
 BASE_DIR = Path(__file__).resolve().parents[1]
 MODEL_PATH = BASE_DIR / "models" / "model.joblib"
 
