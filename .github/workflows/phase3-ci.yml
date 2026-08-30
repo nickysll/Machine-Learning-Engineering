@@ -1,0 +1,57 @@
+name: Phase 3 CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "tech-challenge-fase-03/**"
+      - ".github/workflows/phase3-ci.yml"
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "tech-challenge-fase-03/**"
+      - ".github/workflows/phase3-ci.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: tech-challenge-fase-03
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Poetry
+        run: pipx install poetry==2.4.1
+
+      - name: Install dependencies
+        run: poetry install --with dev --no-root --no-interaction
+
+      - name: Download dataset
+        run: poetry run python scripts/download_data.py
+
+      - name: Train model
+        run: poetry run python src/training/train.py
+
+      - name: Run Ruff
+        run: poetry run ruff check .
+
+      - name: Run tests
+        run: poetry run pytest -v
+
+      - name: Build Docker image
+        run: docker build -t medical-text-api:ci .
