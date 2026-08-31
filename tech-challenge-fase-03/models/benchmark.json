@@ -1,0 +1,21 @@
+{
+  "samples": 300,
+  "sklearn": {
+    "mean_ms": 2.1004189933303983,
+    "p50_ms": 1.9669280000016443,
+    "p95_ms": 3.0409985001256254,
+    "p99_ms": 3.685317409963317,
+    "throughput_requests_per_second": 476.0954853176282
+  },
+  "onnx_runtime": {
+    "mean_ms": 2.532712783330832,
+    "p50_ms": 2.260809000063091,
+    "p95_ms": 3.646430550111292,
+    "p99_ms": 6.229296470121377,
+    "throughput_requests_per_second": 394.833558144274
+  },
+  "improvement": {
+    "mean_latency_reduction_percent": -20.581312175005326,
+    "throughput_improvement_percent": -17.068409526954476
+  }
+}

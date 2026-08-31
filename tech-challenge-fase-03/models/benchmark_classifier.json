@@ -1,0 +1,22 @@
+{
+  "benchmark_type": "classifier_only",
+  "samples": 300,
+  "sklearn": {
+    "mean_ms": 0.23506234333429651,
+    "p50_ms": 0.2120235000120374,
+    "p95_ms": 0.3451733999895623,
+    "p99_ms": 0.4551886599529094,
+    "throughput_requests_per_second": 4254.190551388484
+  },
+  "onnx_runtime": {
+    "mean_ms": 0.3691070599938939,
+    "p50_ms": 0.3349024999579342,
+    "p95_ms": 0.5709935999675511,
+    "p99_ms": 0.8554681498753769,
+    "throughput_requests_per_second": 2709.241053304542
+  },
+  "improvement": {
+    "mean_latency_reduction_percent": -57.02517670768058,
+    "throughput_improvement_percent": -36.31594493527566
+  }
+}
