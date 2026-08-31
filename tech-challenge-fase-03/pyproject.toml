@@ -3,7 +3,7 @@ name = "tech-challenge-fase-03"
 version = "0.1.0"
 description = "Deploy de modelo de ML com CI/CD, monitoramento e otimização de latência."
 authors = [
-    {name = "Your Name",email = "you@example.com"}
+    {name = "Nicoly da Silva Moreira"}
 ]
 requires-python = ">=3.12,<3.13"
 dependencies = [
