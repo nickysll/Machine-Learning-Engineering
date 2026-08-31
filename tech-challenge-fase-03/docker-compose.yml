@@ -42,6 +42,33 @@ services:
 
     restart: unless-stopped
 
+  airflow:
+    build:
+      context: .
+      dockerfile: Dockerfile.airflow
+
+    ports:
+      - "8080:8080"
+
+    command: standalone
+
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "false"
+
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./:/opt/airflow/project
+
+    user: "${AIRFLOW_UID:-50000}:0"
+
+    restart: unless-stopped
+
 volumes:
   prometheus_data:
   grafana_data:
+
+
+  
+
+  
