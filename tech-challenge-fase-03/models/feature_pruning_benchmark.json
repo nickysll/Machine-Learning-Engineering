@@ -1,0 +1,58 @@
+{
+  "baseline": {
+    "max_features": null,
+    "vocabulary_size": 218271,
+    "accuracy": 0.5872576177285319,
+    "macro_f1": 0.5884204186082307,
+    "mean_ms": 0.8120914160008397,
+    "p50_ms": 0.7821799999874202,
+    "p95_ms": 1.054551050037844,
+    "p99_ms": 1.3708938799692303,
+    "throughput_requests_per_second": 1231.3884623045517
+  },
+  "max_features_20000": {
+    "max_features": 20000,
+    "vocabulary_size": 20000,
+    "accuracy": 0.5990304709141274,
+    "macro_f1": 0.6011290970288938,
+    "mean_ms": 0.8643649850005772,
+    "p50_ms": 0.8388809999928526,
+    "p95_ms": 1.1062346999892725,
+    "p99_ms": 1.4016950200328888,
+    "throughput_requests_per_second": 1156.918682909549,
+    "mean_latency_reduction_percent": -6.436906974975772,
+    "p95_latency_reduction_percent": -4.9010097661534395,
+    "accuracy_difference_points": 1.177285318559551,
+    "macro_f1_difference": 0.012708678420663144
+  },
+  "max_features_10000": {
+    "max_features": 10000,
+    "vocabulary_size": 10000,
+    "accuracy": 0.6018005540166205,
+    "macro_f1": 0.6045039359040996,
+    "mean_ms": 0.7787864249999075,
+    "p50_ms": 0.7503260000021328,
+    "p95_ms": 1.0165468999872467,
+    "p99_ms": 1.4239942399609615,
+    "throughput_requests_per_second": 1284.049089582062,
+    "mean_latency_reduction_percent": 4.101138165570484,
+    "p95_latency_reduction_percent": 3.6038226930060513,
+    "accuracy_difference_points": 1.454293628808856,
+    "macro_f1_difference": 0.016083517295868877
+  },
+  "max_features_5000": {
+    "max_features": 5000,
+    "vocabulary_size": 5000,
+    "accuracy": 0.5969529085872576,
+    "macro_f1": 0.5995412532143143,
+    "mean_ms": 0.8786405949994105,
+    "p50_ms": 0.850608000007469,
+    "p95_ms": 1.1759250000238806,
+    "p99_ms": 1.392468589911004,
+    "throughput_requests_per_second": 1138.121782320644,
+    "mean_latency_reduction_percent": -8.194789119468048,
+    "p95_latency_reduction_percent": -11.509537635155812,
+    "accuracy_difference_points": 0.9695290858725669,
+    "macro_f1_difference": 0.011120834606083596
+  }
+}

@@ -2,21 +2,21 @@
   "benchmark_type": "classifier_only",
   "samples": 300,
   "sklearn": {
-    "mean_ms": 0.23506234333429651,
-    "p50_ms": 0.2120235000120374,
-    "p95_ms": 0.3451733999895623,
-    "p99_ms": 0.4551886599529094,
-    "throughput_requests_per_second": 4254.190551388484
+    "mean_ms": 0.2199186566682935,
+    "p50_ms": 0.17189000016060163,
+    "p95_ms": 0.39267669982336895,
+    "p99_ms": 0.6242678799890194,
+    "throughput_requests_per_second": 4547.135814440311
   },
   "onnx_runtime": {
-    "mean_ms": 0.3691070599938939,
-    "p50_ms": 0.3349024999579342,
-    "p95_ms": 0.5709935999675511,
-    "p99_ms": 0.8554681498753769,
-    "throughput_requests_per_second": 2709.241053304542
+    "mean_ms": 0.05426936333151389,
+    "p50_ms": 0.033448999943175295,
+    "p95_ms": 0.1322953999419953,
+    "p99_ms": 0.26081085988380437,
+    "throughput_requests_per_second": 18426.6027572744
   },
   "improvement": {
-    "mean_latency_reduction_percent": -57.02517670768058,
-    "throughput_improvement_percent": -36.31594493527566
+    "mean_latency_reduction_percent": 75.32298343683993,
+    "throughput_improvement_percent": 305.23537253400593
   }
 }

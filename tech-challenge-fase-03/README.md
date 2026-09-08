@@ -67,7 +67,7 @@ Além do modelo, foi construída uma arquitetura de MLOps contendo:
                          └─────────────────────┘
 ```
 
-Também foi avaliada uma versão do classificador em **ONNX Runtime**, permitindo comparar latência e throughput com o pipeline original em scikit-learn.
+Também foi avaliada uma versão do classificador em **ONNX Runtime**, com validação de equivalência e comparação de latência e throughput em relação ao scikit-learn.
 
 ---
 
@@ -95,6 +95,8 @@ Quantidade de registros:
 | Total | 14.438 |
 
 O problema possui **5 classes**.
+
+> **Escopo:** o dataset utilizado possui categorias de condições médicas e não rótulos clínicos reais de urgência. Portanto, este projeto demonstra tecnicamente o ciclo de vida de uma solução de classificação de textos médicos em produção e **não deve ser interpretado como sistema clínico de triagem ou apoio à decisão médica**.
 
 Distribuição observada no conjunto de treinamento:
 
@@ -125,11 +127,12 @@ data/raw/test.parquet
 
 # Modelo de Machine Learning
 
-O pipeline utiliza:
+O pipeline final utiliza:
 
 - `TfidfVectorizer`
 - `LogisticRegression`
 - `class_weight="balanced"`
+- limitação do vocabulário com `max_features=10_000`
 
 Configuração principal do TF-IDF:
 
@@ -140,35 +143,36 @@ ngram_range=(1, 2)
 min_df=2
 max_df=0.95
 sublinear_tf=True
+max_features=10_000
 ```
 
 O uso de `class_weight="balanced"` foi escolhido após comparação com uma versão sem balanceamento.
 
-A versão balanceada apresentou melhor desempenho global, principalmente nas classes menos representadas.
+Além disso, durante a etapa de otimização foi reduzida a dimensionalidade do TF-IDF de **218.271 para 10.000 features**, configuração que apresentou melhor equilíbrio entre qualidade preditiva e latência.
 
 ---
 
-## Resultados do modelo
+## Resultados do modelo final
 
 Resultados no conjunto de teste:
 
 | Métrica | Resultado |
 |---|---:|
-| Accuracy | **58,73%** |
-| Macro F1 | **0,5884** |
-| Weighted F1 | **0,5734** |
+| Accuracy | **60,18%** |
+| Macro F1 | **0,6045** |
+| Weighted F1 | **0,5894** |
 
 Resultados por classe:
 
 | Classe | Precision | Recall | F1-score |
 |---:|---:|---:|---:|
-| 1 | 0,675 | 0,750 | 0,711 |
-| 2 | 0,464 | 0,662 | 0,545 |
-| 3 | 0,520 | 0,660 | 0,582 |
-| 4 | 0,645 | 0,741 | 0,690 |
-| 5 | 0,558 | 0,330 | 0,415 |
+| 1 | 0,69 | 0,76 | 0,73 |
+| 2 | 0,48 | 0,69 | 0,57 |
+| 3 | 0,53 | 0,69 | 0,60 |
+| 4 | 0,66 | 0,73 | 0,69 |
+| 5 | 0,58 | 0,35 | 0,44 |
 
-O modelo apresenta melhor desempenho nas classes 1 e 4 e maior dificuldade na classe 5.
+O desempenho varia entre as classes, com maior dificuldade ainda observada na classe 5.
 
 As métricas completas são armazenadas em:
 
@@ -333,9 +337,11 @@ docker compose down
 
 ---
 
-# Integração Contínua — GitHub Actions
+# CI/CD — GitHub Actions
 
-O projeto possui pipeline de CI executado automaticamente em pushes e pull requests relacionados à Fase 03.
+O projeto possui um workflow automatizado no GitHub Actions executado em pushes e pull requests relacionados à Fase 03.
+
+Nesta implementação, o pipeline cobre **integração contínua e build da imagem Docker**. O deploy em nuvem não é executado automaticamente; a arquitetura de produção em nuvem é apresentada de forma teórica na seção específica deste README.
 
 Workflow:
 
@@ -503,99 +509,133 @@ http://localhost:3000
 
 ---
 
-# Otimização com ONNX
+# Otimização de performance
 
-Também foi analisada a conversão do modelo para **ONNX Runtime**.
+O critério de performance foi tratado em duas etapas complementares:
 
-Inicialmente foi avaliada a conversão do pipeline completo contendo:
+1. **redução da dimensionalidade do TF-IDF**;
+2. **conversão do classificador para ONNX Runtime**.
+
+Os experimentos foram mantidos separados porque utilizam protocolos de benchmark diferentes.
+
+---
+
+## 1. Redução da dimensionalidade do TF-IDF
+
+O modelo baseline utilizava um vocabulário de **218.271 features**.
+
+Foram testadas configurações com 20.000, 10.000 e 5.000 features. A configuração com:
 
 ```text
-TF-IDF + Logistic Regression
+max_features=10_000
 ```
 
-Entretanto, foram observadas divergências relacionadas ao processamento textual do `TfidfVectorizer` convertido.
+apresentou o melhor equilíbrio entre qualidade preditiva e desempenho.
 
-Para garantir equivalência entre as previsões, a estratégia final manteve o **mesmo TF-IDF do scikit-learn** e converteu somente a `LogisticRegression` para ONNX.
+| Métrica | Baseline | Otimizado |
+|---|---:|---:|
+| Features | 218.271 | **10.000** |
+| Accuracy | 58,73% | **60,18%** |
+| Macro F1 | 0,5884 | **0,6045** |
+| Latência média | 0,8135 ms | **0,7917 ms** |
+| P95 | 1,0656 ms | **1,0293 ms** |
 
-A validação realizada em 100 amostras apresentou:
+Resultados observados:
+
+- redução de aproximadamente **95,4% no espaço de features**;
+- redução de **2,69% na latência média**;
+- redução de **3,40% na latência P95**;
+- aumento de **2,77% no throughput**;
+- ganho de **1,45 ponto percentual em accuracy**.
+
+Para reduzir o efeito de oscilações do ambiente local, a validação final foi realizada com **5 rodadas independentes**, cada uma contendo **50 chamadas de warm-up e 1.000 inferências**, e a comparação utilizou a mediana das rodadas.
+
+Os resultados são armazenados em:
 
 ```text
+models/feature_pruning_benchmark.json
+models/feature_pruning_validation.json
+```
+
+---
+
+## 2. Otimização com ONNX Runtime
+
+Após a redução do vocabulário para 10.000 features, também foi avaliada a execução do classificador com **ONNX Runtime**.
+
+A tentativa inicial de converter o pipeline textual completo apresentou divergências relacionadas ao processamento do `TfidfVectorizer`. Para preservar a equivalência entre as previsões, a estratégia final manteve o **mesmo TF-IDF do scikit-learn** e converteu somente a `LogisticRegression` para ONNX.
+
+O modelo ONNX gerado possui aproximadamente:
+
+```text
+0,24 MB
+```
+
+A equivalência foi validada em 100 amostras:
+
+```text
+Samples compared: 100
 Matching predictions: 100
 Agreement: 100%
 ```
 
-Assim, a comparação de performance foi feita entre classificadores equivalentes.
+### Benchmark end-to-end
 
----
+Neste experimento foi considerado o fluxo necessário para a inferência com TF-IDF e classificador.
 
-# Benchmark de latência
-
-Foram realizadas 20 chamadas de warm-up e 300 inferências utilizadas nas métricas finais.
-
-## Benchmark end-to-end
-
-Nesse cenário foi considerado todo o processo necessário para realizar uma previsão.
+Foram utilizadas **20 chamadas de warm-up e 300 inferências**.
 
 | Métrica | Scikit-learn | ONNX Runtime |
 |---|---:|---:|
-| Média | **2,100 ms** | 2,533 ms |
-| P50 | **1,967 ms** | 2,261 ms |
-| P95 | **3,041 ms** | 3,646 ms |
-| P99 | **3,685 ms** | 6,229 ms |
-| Throughput | **476,10 req/s** | 394,83 req/s |
+| Média | 1,0743 ms | **1,0019 ms** |
+| P50 | 0,9736 ms | **0,9050 ms** |
+| P95 | 1,7004 ms | **1,5906 ms** |
+| P99 | **2,0133 ms** | 2,2530 ms |
+| Throughput | 930,81 req/s | **998,12 req/s** |
 
 Resultado:
 
-```text
-ONNX apresentou aproximadamente 20,6% mais latência média
-e aproximadamente 17,1% menos throughput.
-```
+- **6,74% de redução na latência média**;
+- **7,23% de aumento no throughput**;
+- melhora também em P50 e P95;
+- o P99 apresentou piora nesta execução, evidenciando a variabilidade natural de medições tão curtas em ambiente local.
 
----
+### Benchmark do classificador isolado
 
-## Benchmark do classificador isolado
-
-Também foi realizada uma comparação após pré-calcular as features TF-IDF, isolando a etapa do classificador.
-
-Resultados da execução versionada:
+Também foi executado um benchmark somente da etapa de classificação, com as features TF-IDF previamente calculadas.
 
 | Métrica | Scikit-learn | ONNX Runtime |
 |---|---:|---:|
-| Média | **0,235 ms** | 0,369 ms |
-| P50 | **0,212 ms** | 0,335 ms |
-| P95 | **0,345 ms** | 0,571 ms |
-| P99 | **0,455 ms** | 0,855 ms |
-| Throughput | **4.254 req/s** | 2.709 req/s |
+| Média | 0,2199 ms | **0,0543 ms** |
+| P50 | 0,1719 ms | **0,0334 ms** |
+| P95 | 0,3927 ms | **0,1323 ms** |
+| P99 | 0,6243 ms | **0,2608 ms** |
+| Throughput | 4.547,14 req/s | **18.426,60 req/s** |
 
-Nesta execução, o scikit-learn também apresentou melhor desempenho.
+Resultado:
 
-Como as latências do classificador isolado estão abaixo de 1 ms, pequenas variações de ambiente e agendamento da CPU podem gerar diferenças relevantes entre execuções. Por isso, os resultados versionados são utilizados como referência do experimento.
+- **75,32% de redução na latência média do classificador**;
+- **305,24% de aumento no throughput**.
+
+A diferença entre o ganho do classificador isolado e o ganho end-to-end mostra que parte do custo total da inferência está no pré-processamento TF-IDF. Dessa forma, a otimização do classificador é expressiva, mas o ganho percebido pelo pipeline completo é menor.
 
 ---
 
-# Conclusão da otimização
+## Conclusão da otimização
 
-A adoção de ONNX **não apresentou ganho de latência para este pipeline específico**.
+A etapa de otimização demonstrou ganho mensurável de performance sem perda de qualidade preditiva.
 
-Esse resultado é tecnicamente relevante: uma ferramenta de otimização não deve ser considerada superior apenas por sua adoção.
+A redução do vocabulário do TF-IDF melhorou simultaneamente a qualidade do modelo e a latência. Em seguida, o ONNX Runtime também apresentou ganho no benchmark end-to-end e ganho ainda mais expressivo quando o classificador foi medido isoladamente.
 
-Neste projeto, fatores como:
+A API principal permanece utilizando o pipeline `model.joblib`, já com o TF-IDF otimizado para **10.000 features**, garantindo que pré-processamento e classificação sejam carregados em um único artefato. O ONNX Runtime é mantido como experimento adicional de aceleração e pode ser reproduzido pelos scripts de otimização.
 
-- modelo extremamente leve;
-- implementação já eficiente da Logistic Regression no scikit-learn;
-- custo de transformação dos dados;
-- conversão de matriz esparsa para representação densa;
-- overhead de chamada ao ONNX Runtime;
-
-fazem com que o ganho esperado não apareça no cenário avaliado.
-
-Dessa forma, a versão scikit-learn foi mantida como alternativa mais eficiente para a inferência completa neste ambiente.
-
-Os resultados completos estão disponíveis em:
+Resultados completos:
 
 ```text
 models/benchmark.json
 models/benchmark_classifier.json
+models/feature_pruning_benchmark.json
+models/feature_pruning_validation.json
 ```
 
 ---
@@ -684,7 +724,9 @@ tech-challenge-fase-03/
 ├── models/
 │   ├── metrics.json
 │   ├── benchmark.json
-│   └── benchmark_classifier.json
+│   ├── benchmark_classifier.json
+│   ├── feature_pruning_benchmark.json
+│   └── feature_pruning_validation.json
 │
 ├── monitoring/
 │   ├── prometheus.yml
@@ -698,6 +740,8 @@ tech-challenge-fase-03/
 │   ├── optimization/
 │   │   ├── benchmark.py
 │   │   ├── benchmark_classifier.py
+│   │   ├── benchmark_feature_pruning.py
+│   │   ├── validate_feature_pruning.py
 │   │   ├── convert_onnx.py
 │   │   └── validate_onnx.py
 │   │
@@ -726,7 +770,7 @@ tech-challenge-fase-03/
 ## 1. Clonar o repositório
 
 ```bash
-git clone git@github.com:nickysll/Machine-Learning-Engineering.git
+git clone https://github.com/nickysll/Machine-Learning-Engineering.git
 cd Machine-Learning-Engineering/tech-challenge-fase-03
 ```
 
@@ -744,7 +788,7 @@ Docker Compose
 Instalação:
 
 ```bash
-poetry install
+poetry install --with dev --no-root
 ```
 
 ## 3. Baixar os dados
@@ -759,7 +803,7 @@ poetry run python scripts/download_data.py
 poetry run python scripts/validate_data.py
 ```
 
-## 5. Treinar
+## 5. Treinar o modelo final
 
 ```bash
 poetry run python src/training/train.py
@@ -783,7 +827,30 @@ poetry run pytest -v
 poetry run ruff check .
 ```
 
-## 9. Subir a solução
+## 9. Reproduzir a otimização do TF-IDF
+
+```bash
+poetry run python src/optimization/benchmark_feature_pruning.py
+poetry run python src/optimization/validate_feature_pruning.py
+```
+
+## 10. Gerar e validar o modelo ONNX
+
+```bash
+poetry run python src/optimization/convert_onnx.py
+poetry run python src/optimization/validate_onnx.py
+```
+
+## 11. Executar os benchmarks ONNX
+
+```bash
+poetry run python src/optimization/benchmark.py
+poetry run python src/optimization/benchmark_classifier.py
+```
+
+## 12. Subir a solução completa
+
+> Antes do build da API, execute as etapas de download e treinamento para que `data/raw/` e `models/model.joblib` existam localmente.
 
 Em Linux/WSL:
 
@@ -792,7 +859,7 @@ echo "AIRFLOW_UID=$(id -u)" > .env
 docker compose up --build
 ```
 
-Depois:
+Serviços:
 
 ```text
 FastAPI:    http://localhost:8000
@@ -855,7 +922,7 @@ testes
   ↓
 container
   ↓
-CI
+CI / build
   ↓
 orquestração
   ↓
@@ -866,7 +933,17 @@ otimização
 benchmark
 ```
 
-O principal aprendizado da análise de performance foi que **otimização deve ser medida e não presumida**. Apesar da adoção de ONNX Runtime, o pipeline original em scikit-learn apresentou menor latência no ambiente avaliado.
+Principais resultados técnicos:
+
+- modelo final com **60,18% de accuracy**, **Macro F1 de 0,6045** e **Weighted F1 de 0,5894**;
+- redução do espaço TF-IDF de **218.271 para 10.000 features**;
+- redução de **2,69% na latência média** e **3,40% no P95** após a redução dimensional;
+- ONNX Runtime com **6,74% de redução na latência média end-to-end** e **7,23% de aumento no throughput**;
+- no classificador isolado, ONNX apresentou **75,32% de redução na latência média** e **305,24% de aumento no throughput**;
+- equivalência de **100% das previsões** entre scikit-learn e ONNX nas 100 amostras utilizadas na validação;
+- pipeline de CI/build automatizado, DAG Airflow funcional e stack de monitoramento com Prometheus e Grafana.
+
+O principal aprendizado da análise de performance foi que **otimização deve ser medida e não presumida**. A primeira estratégia de conversão do pipeline completo não foi adotada devido a divergências no pré-processamento textual. A solução final preservou o TF-IDF do scikit-learn, reduziu sua dimensionalidade e converteu apenas o classificador para ONNX, permitindo obter ganhos mensuráveis e manter equivalência de previsões.
 
 ---
 
@@ -877,11 +954,13 @@ O principal aprendizado da análise de performance foi que **otimização deve s
 ✅ API de inferência  
 ✅ Testes automatizados  
 ✅ Containerização  
-✅ CI com GitHub Actions  
+✅ CI/build com GitHub Actions  
 ✅ Orquestração com Airflow  
 ✅ Monitoramento com Prometheus e Grafana  
-✅ Conversão e avaliação ONNX  
-✅ Benchmark de latência  
+✅ Otimização do TF-IDF  
+✅ Conversão e validação ONNX  
+✅ Benchmarks de latência e throughput  
+✅ Decisão arquitetural de nuvem documentada  
 
 ---
 

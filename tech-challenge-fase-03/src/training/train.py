@@ -45,13 +45,14 @@ def build_pipeline() -> Pipeline:
             (
                 "tfidf",
                 TfidfVectorizer(
-                    lowercase=True,
-                    stop_words="english",
-                    ngram_range=(1, 2),
-                    min_df=2,
-                    max_df=0.95,
-                    sublinear_tf=True,
-                ),
+                lowercase=True,
+                stop_words="english",
+                ngram_range=(1, 2),
+                min_df=2,
+                max_df=0.95,
+                sublinear_tf=True,
+                max_features=10_000,
+            ),
             ),
             (
                 "classifier",
