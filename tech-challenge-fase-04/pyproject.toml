@@ -1,0 +1,35 @@
+[project]
+name = "tech-challenge-fase-04"
+version = "0.1.0"
+description = "MLOps, Data Drift e Observabilidade de Modelos de Crédito"
+authors = [
+    {name = "nickysll",email = "nickysll@github.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "numpy (>=1.26,<3)",
+    "pandas (>=2.2,<3)",
+    "scikit-learn (>=1.5,<2)",
+    "pandera[pandas] (>=0.24,<1)",
+    "ucimlrepo (>=0.0.7)",
+    "joblib (>=1.4,<2)",
+    "xlrd (>=2,<3)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "pytest (>=8,<10)"
+]
+
+[tool.poetry]
+package-mode = false
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

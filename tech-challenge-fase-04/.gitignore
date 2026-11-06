@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+.env
+.DS_Store
+# Artefatos regeneráveis e dados
+/data/*.csv
+/models/*.joblib
+/reports/*.json
+/logs/*.log
