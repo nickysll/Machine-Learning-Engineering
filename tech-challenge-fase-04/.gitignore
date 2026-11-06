@@ -1,11 +1,22 @@
-.venv/
+# Ambiente Python
 __pycache__/
 .pytest_cache/
 *.pyc
+.venv/
 .env
 .DS_Store
-# Artefatos regeneráveis e dados
+
+# Dados gerados
 /data/*.csv
+
+# Modelos treinados
 /models/*.joblib
-/reports/*.json
+
+# Logs
 /logs/*.log
+
+# Relatorios temporarios
+/reports/*.tmp
+
+# Configuracoes locais
+poetry.toml

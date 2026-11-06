@@ -1,0 +1,56 @@
+{
+  "timestamp_utc": "2026-11-06T23:03:07.843439+00:00",
+  "batch": "invalid",
+  "rows": 20,
+  "status": "blocked",
+  "failures": [
+    {
+      "schema_context": "Column",
+      "column": "ID",
+      "check": "field_uniqueness",
+      "check_number": "NULL",
+      "failure_case": "18145.0",
+      "index": "3"
+    },
+    {
+      "schema_context": "Column",
+      "column": "ID",
+      "check": "field_uniqueness",
+      "check_number": "NULL",
+      "failure_case": "18145.0",
+      "index": "4"
+    },
+    {
+      "schema_context": "Column",
+      "column": "LIMIT_BAL",
+      "check": "greater_than(0)",
+      "check_number": "0",
+      "failure_case": "-500.0",
+      "index": "1"
+    },
+    {
+      "schema_context": "Column",
+      "column": "AGE",
+      "check": "in_range(18, 100)",
+      "check_number": "0",
+      "failure_case": "15.0",
+      "index": "0"
+    },
+    {
+      "schema_context": "Column",
+      "column": "PAY_AMT1",
+      "check": "not_nullable",
+      "check_number": "NULL",
+      "failure_case": "NULL",
+      "index": "2"
+    },
+    {
+      "schema_context": "Column",
+      "column": "PAY_AMT1",
+      "check": "dtype('int64')",
+      "check_number": "NULL",
+      "failure_case": "NULL",
+      "index": "2"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "n_train": 18000,
+  "n_test": 6000,
+  "positive_rate_test": 0.2212,
+  "accuracy": 0.6945,
+  "precision": 0.3847,
+  "recall": 0.636,
+  "f1": 0.4794,
+  "roc_auc": 0.7174,
+  "average_precision": 0.4857,
+  "confusion_matrix": [
+    [
+      3323,
+      1350
+    ],
+    [
+      483,
+      844
+    ]
+  ],
+  "features": [
+    "LIMIT_BAL",
+    "AGE",
+    "PAY_0",
+    "PAY_2",
+    "BILL_AMT1",
+    "PAY_AMT1"
+  ]
+}
