@@ -1,0 +1,16 @@
+{
+    "moderate": {
+        "total_records": 6000,
+        "changed_classifications": 211,
+        "change_rate": 0.0352,
+        "changed_to_positive": 211,
+        "changed_to_negative": 0
+    },
+    "severe": {
+        "total_records": 6000,
+        "changed_classifications": 508,
+        "change_rate": 0.0847,
+        "changed_to_positive": 508,
+        "changed_to_negative": 0
+    }
+}

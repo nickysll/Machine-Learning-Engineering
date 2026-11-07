@@ -1,0 +1,32 @@
+{
+    "LIMIT_BAL": {
+        "ks_statistic": 0.18961111111111106,
+        "p_value": 3.824180446030508e-142,
+        "drift_detected": true
+    },
+    "AGE": {
+        "ks_statistic": 0.3249444444444445,
+        "p_value": 0.0,
+        "drift_detected": true
+    },
+    "PAY_0": {
+        "ks_statistic": 0.01011111111111107,
+        "p_value": 0.7430137570620876,
+        "drift_detected": false
+    },
+    "PAY_2": {
+        "ks_statistic": 0.0033888888888888857,
+        "p_value": 0.9999999992279176,
+        "drift_detected": false
+    },
+    "BILL_AMT1": {
+        "ks_statistic": 0.008777777777777801,
+        "p_value": 0.8755989194761298,
+        "drift_detected": false
+    },
+    "PAY_AMT1": {
+        "ks_statistic": 0.009888888888888836,
+        "p_value": 0.7670983165733025,
+        "drift_detected": false
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "baseline": {
+        "records": 6000,
+        "predicted_positive_rate": 0.3702,
+        "mean_predicted_risk": 0.4546,
+        "high_risk_count": 2221
+    },
+    "moderate": {
+        "records": 6000,
+        "predicted_positive_rate": 0.4053,
+        "mean_predicted_risk": 0.4663,
+        "high_risk_count": 2432
+    },
+    "severe": {
+        "records": 6000,
+        "predicted_positive_rate": 0.4548,
+        "mean_predicted_risk": 0.4798,
+        "high_risk_count": 2729
+    }
+}
