@@ -15,7 +15,8 @@ dependencies = [
     "ucimlrepo (>=0.0.7)",
     "joblib (>=1.4,<2)",
     "xlrd (>=2,<3)",
-    "evidently (>=0.7,<0.8)"
+    "evidently (>=0.7,<0.8)",
+    "mlflow (>=3.18.0,<4.0.0)"
 ]
 
 

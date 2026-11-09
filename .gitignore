@@ -19,6 +19,8 @@ venv/
 
 # Python
 __pycache__/
+.pytest_cache/
+*.pyc
 *.py[cod]
 *.so
 
@@ -27,6 +29,8 @@ __pycache__/
 
 # VS Code
 .vscode/
+
+poetry.toml
 
 # Sistema
 .DS_Store
@@ -64,3 +68,30 @@ models/*
 # Figuras geradas
 reports/figures/*
 !reports/figures/.gitkeep
+
+logs/
+
+# ==========================================
+# TECH CHALLENGE - FASE 4
+# ==========================================
+
+# Dados gerados
+tech-challenge-fase-04/data/*
+!tech-challenge-fase-04/data/.gitkeep
+
+# Modelos treinados
+tech-challenge-fase-04/models/*
+!tech-challenge-fase-04/models/.gitkeep
+
+# Logs
+tech-challenge-fase-04/logs/*
+
+# Relatórios temporários
+tech-challenge-fase-04/reports/*.html
+
+# Configuração local do Poetry
+tech-challenge-fase-04/poetry.toml
+/tech-challenge-fase-04/mlflow.db
+
+/tech-challenge-fase-04/src/*.py.bak
+!tech-challenge-fase-04/reports/drift_*.html
