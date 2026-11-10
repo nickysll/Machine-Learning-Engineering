@@ -151,7 +151,7 @@ No cenário severo, o Evidently identificou drift em duas das seis variáveis an
 
 Entretanto, o alerta global de Dataset Drift não foi acionado, pois o relatório utiliza um limite de 50% de colunas com drift.
 
-O pipeline operacional adota um critério diferente: gera um alerta `DATA_DRIFT` quando pelo menos uma variável apresenta significância estatística após correção de Bonferroni.q
+O pipeline operacional adota um critério diferente: gera um alerta `DATA_DRIFT` quando pelo menos uma variável apresenta significância estatística após correção de Bonferroni.
 
 Assim, os resultados não são contraditórios, mas refletem diferentes níveis de monitoramento e regras de decisão.
 
@@ -270,7 +270,20 @@ tech-challenge-fase-04/
     └── plano_de_execucao.md
 ```
 
-**Controle de versão:** `mlflow.db`, `logs/`, backups e dados locais de produção/simulação são mantidos fora do Git. Os três relatórios HTML do Evidently foram liberados no `.gitignore` para eventual inclusão como evidência. **Antes de publicar**, verificar se contêm dados por linha, campos identificáveis ou conteúdo que não deva ser compartilhado; o HTML pode incorporar dados na própria página. Não executar `git add .` sem revisar a lista de arquivos.
+**Controle de versão:** `mlflow.db`, `logs/`, backups e dados locais de produção/simulação são mantidos fora do Git. Os três relatórios HTML do Evidently foram liberados no `.gitignore` e publicados no GitHub como evidência. **Antes de publicar**, verificar se contêm dados por linha, campos identificáveis ou conteúdo que não deva ser compartilhado; o HTML pode incorporar dados na própria página. Não executar `git add .` sem revisar a lista de arquivos.
+
+## 9. Evidências e apresentação
+
+O repositório contém relatórios HTML do Evidently,
+métricas de avaliação, testes de contratos de dados
+e scripts de monitoramento com MLflow.
+
+Foram aprovados 12 testes automatizados e validado
+o registro de falhas em um banco MLflow temporário.
+
+**Vídeo STAR:** não incluído nesta entrega.
+Sua ausência pode afetar a pontuação prevista
+no enunciado.
 
 ## 10. Limitações e uso responsável
 
