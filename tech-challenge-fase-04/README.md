@@ -151,7 +151,7 @@ No cenário severo, o Evidently identificou drift em duas das seis variáveis an
 
 Entretanto, o alerta global de Dataset Drift não foi acionado, pois o relatório utiliza um limite de 50% de colunas com drift.
 
-O pipeline operacional adota um critério diferente: gera um alerta `DATA_DRIFT` quando pelo menos uma variável apresenta significância estatística após correção de Bonferroni.
+O pipeline operacional adota um critério diferente: gera um alerta `DATA_DRIFT` quando pelo menos uma variável apresenta significância estatística após correção de Bonferroni.q
 
 Assim, os resultados não são contraditórios, mas refletem diferentes níveis de monitoramento e regras de decisão.
 
@@ -271,19 +271,6 @@ tech-challenge-fase-04/
 ```
 
 **Controle de versão:** `mlflow.db`, `logs/`, backups e dados locais de produção/simulação são mantidos fora do Git. Os três relatórios HTML do Evidently foram liberados no `.gitignore` para eventual inclusão como evidência. **Antes de publicar**, verificar se contêm dados por linha, campos identificáveis ou conteúdo que não deva ser compartilhado; o HTML pode incorporar dados na própria página. Não executar `git add .` sem revisar a lista de arquivos.
-
-## 9. Evidências e apresentação
-
-Para demonstrar o projeto, apresentar: (a) rejeição do lote inválido; (b) os três HTML do Evidently e as features com drift; (c) as diferenças de classificação dos cenários; (d) execuções e tags no MLflow, incluindo alertas; (e) resultado `12 passed` e a evidência de falha `FAILED` registrada; (f) medidas de privacidade e limites de inferência.
-
-**Vídeo obrigatório:** até **5 minutos**, estruturado pelo método **STAR**:
-
-- **Situation:** risco de degradação silenciosa no crédito.
-- **Task:** validar entradas, detectar drift, rastrear saúde e documentar governança.
-- **Action:** Pandera, classificador baseline, simulações, Evidently/KS, Bonferroni, MLflow e testes.
-- **Result:** alertas baseline/moderate/severe, 211/508 alterações de previsão, testes aprovados, limitações e ações recomendadas.
-
-**Link do vídeo:** _pendente de gravação e inserção antes da entrega_.
 
 ## 10. Limitações e uso responsável
 
