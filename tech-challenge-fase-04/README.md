@@ -62,6 +62,12 @@ python -m src.compare_scenarios
 # Etapa 3 — experimentos e monitoramento operacional
 python -m src.monitor_experiments
 python -m src.monitor_pipeline
+
+# Etapa 4 — Concept Drift sintético
+python -m src.simulate_concept_drift
+python -m src.monitor_concept_drift
+
+# Validação automatizada
 python -m pytest tests/ -v
 
 # Interface de rastreamento (enquanto o terminal estiver aberto)
@@ -155,6 +161,38 @@ O pipeline operacional adota um critério diferente: gera um alerta `DATA_DRIFT`
 
 Assim, os resultados não são contraditórios, mas refletem diferentes níveis de monitoramento e regras de decisão.
 
+### Experimento adicional — Concept Drift sintético
+
+O script `src/simulate_concept_drift.py` simula uma mudança
+na relação condicional entre as características e a inadimplência.
+
+Foi utilizado o mesmo holdout de 6.000 registros e o mesmo modelo,
+sem modificar as features, os IDs ou os arquivos originais.
+
+Foram alterados artificialmente apenas rótulos originalmente
+negativos do subgrupo `PAY_0 <= 0` e `LIMIT_BAL <= 100000`.
+As probabilidades experimentais de alteração foram 0%, 15% e 30%.
+
+| Cenário | Rótulos alterados | Inadimplência do subgrupo | Accuracy | ROC-AUC |
+|---|---:|---:|---:|---:|
+| Baseline | 0 | 17,73% | 0,6800 | 0,7008 |
+| Moderate | 203 | 29,12% | 0,6805 | 0,6975 |
+| Severe | 444 | 42,65% | 0,6827 | 0,6971 |
+
+A mudança foi criada artificialmente em `P(Y|X)`, mantendo
+`P(X)` inalterada. A Accuracy permaneceu aproximadamente
+estável e o ROC-AUC caiu levemente. Não foi demonstrada
+uma degradação generalizada do desempenho nem Concept Drift
+observado em produção.
+
+Os resultados agregados estão em
+`reports/concept_drift_comparison.json`.
+
+O script `src/monitor_concept_drift.py` registra os cenários
+no experimento MLflow `fase-04-concept-drift`.
+Dois testes específicos verificam a preservação das features,
+a alteração dos rótulos elegíveis e o baseline intacto.
+
 ## 6. Etapa 3 — observabilidade e monitoramento
 
 O projeto possui dois experimentos no **MLflow**, utilizando armazenamento local SQLite (`mlflow.db`):
@@ -203,7 +241,7 @@ Os logs locais ficam em `logs/pipeline.jsonl` (uma linha JSON por execução) e 
 python -m pytest tests/ -v
 ```
 
-Na validação documentada em **08/11/2026**: **12 testes aprovados** — sete de contratos e cinco de monitoramento (três cenários, tratamento de falha e indisponibilidade do MLflow). Foi realizado separadamente um teste de integração real de falha com resultado `FAILED` tanto no pipeline quanto no MLflow. Os testes automatizados usam isolamento/simulações para evitar alterar o banco principal.
+Na validação documentada em **08/11/2026**: **14 testes aprovados** — sete de contratos, cinco de monitoramento e dois de Concept Drift sintético (três cenários, tratamento de falha e indisponibilidade do MLflow). Foi realizado separadamente um teste de integração real de falha com resultado `FAILED` tanto no pipeline quanto no MLflow. Os testes automatizados usam isolamento/simulações para evitar alterar o banco principal.
 
 **Limites:** não há medição contínua de CPU, memória ou disponibilidade da infraestrutura, nem monitoramento em produção de uma API. Os limiares são demonstrativos, não calibrados com dados reais ou níveis de serviço. Alertas são identificados e registrados; o protótipo não implementa notificação externa nem resposta operacional automática.
 
@@ -244,7 +282,7 @@ Para investigar causalidade em um cenário de negócio seriam necessários, conf
 
 - **Data Drift (`P(X)`):** mudanças na distribuição das características — **demonstradas** nos cenários moderate/severe.
 - **Prediction Drift:** mudanças nas saídas do classificador — **demonstradas** pelas 211 e 508 classificações alteradas.
-- **Concept Drift (`P(Y|X)`):** mudança na relação entre entradas e desfecho — **não demonstrada** por esta análise, pois não foram observados novos rótulos confiáveis ao longo do tempo.
+- **Concept Drift (`P(Y|X)`):** mudança na relação entre entradas e desfecho — **simulada artificialmente** por alteração condicional de rótulos; não observada em produção.
 
 Não é correto inferir perda de desempenho preditivo em produção apenas a partir de drift de features ou de previsões.
 
@@ -256,12 +294,13 @@ tech-challenge-fase-04/
 ├── pyproject.toml / poetry.lock
 ├── src/
 │   ├── prepare_data.py / contracts.py / validate_batch.py / train.py
-│   ├── simulate_drift.py / detect_drift.py
+│   ├── simulate_drift.py / detect_drift.py / simulate_concept_drift.py
 │   ├── analyze_predictions.py / compare_scenarios.py
-│   └── monitor_experiments.py / monitor_pipeline.py
+│   └── monitor_experiments.py / monitor_pipeline.py / monitor_concept_drift.py
 ├── tests/
 │   ├── test_contracts.py
-│   └── test_monitor_pipeline.py
+│   ├── test_monitor_pipeline.py
+│   └── test_concept_drift.py
 ├── data/               # arquivos locais de trabalho
 ├── models/             # artefatos locais
 ├── reports/            # JSON de métricas e relatórios HTML
@@ -278,7 +317,7 @@ O repositório contém relatórios HTML do Evidently,
 métricas de avaliação, testes de contratos de dados
 e scripts de monitoramento com MLflow.
 
-Foram aprovados 12 testes automatizados e validado
+Foram aprovados 14 testes automatizados e validado
 o registro de falhas em um banco MLflow temporário.
 
 **Vídeo STAR:** não incluído nesta entrega.
@@ -287,4 +326,4 @@ no enunciado.
 
 ## 10. Limitações e uso responsável
 
-Os resultados provêm de uma simulação sobre um dataset histórico. Não há validação externa em mercado brasileiro, evidência de Concept Drift, auditoria completa de fairness, monitoramento contínuo de infraestrutura ou garantia de conformidade legal para operação de crédito. O protótipo **não deve orientar decisões financeiras individuais**.
+Os resultados provêm de uma simulação sobre um dataset histórico. Não há validação externa em mercado brasileiro, evidência de Concept Drift real, auditoria completa de fairness, monitoramento contínuo de infraestrutura ou garantia de conformidade legal para operação de crédito. O protótipo **não deve orientar decisões financeiras individuais**.
